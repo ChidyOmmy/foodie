@@ -1,24 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, createContext } from "react";
+import { Container } from "@mui/material";
+import Navbar from "./components/Navbar";
+import { ThemeProvider } from "@mui/material";
+import { theme } from "./theme";
+import Hero from "./components/Hero";
+import Meals from "./components/Meals";
+import { menu, user } from "./Context";
 
+export const MenuContext = createContext();
+export const UserContext = createContext();
+
+const mytheme = theme;
 function App() {
+  const [menulist, setMenulist] = useState(menu);
+  const [userData, setUserData] = useState(user);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={mytheme}>
+      <MenuContext.Provider value={[menulist, setMenulist]}>
+        <UserContext.Provider value={[userData, setUserData]}>
+          <Navbar />
+          <Container>
+            <Hero />
+            <Meals />
+          </Container>
+        </UserContext.Provider>
+      </MenuContext.Provider>
+    </ThemeProvider>
   );
 }
 
