@@ -5,7 +5,7 @@ import { UserContext, MenuContext } from "../App";
 const AddToCart = ({ order }) => {
   const orderTitle = order.title;
   const [userData, setUserData] = useContext(UserContext);
-  var [menulist, setMenulist] = useContext(MenuContext);
+  const [menulist, setMenulist] = useContext(MenuContext);
 
   function changeInStock(list, operation) {
     let found = list.find((menu) => menu.title === order.title);
@@ -18,48 +18,60 @@ const AddToCart = ({ order }) => {
         found = { ...found, inStock: found.inStock - 1 };
       }
       newlist[foundIndex] = found;
-      setMenulist(newlist);
-      return;
+      return newlist;
+    } else {
+      return [];
     }
   }
 
   const addOrder = () => {
+    const returnedList = changeInStock(userData.searchResults, "minus");
     if (userData.cart[orderTitle]) {
-      setUserData({
-        ...userData,
-        cart: {
-          ...userData.cart,
-          [orderTitle]: {
-            ...userData.cart[orderTitle],
-            purchased: userData.cart[orderTitle].purchased + 1
-          }
-        }
+      setUserData(() => {
+        return {
+          ...userData,
+          cart: {
+            ...userData.cart,
+            [orderTitle]: {
+              ...userData.cart[orderTitle],
+              purchased: userData.cart[orderTitle].purchased + 1
+            }
+          },
+          searchResults: returnedList
+        };
       });
     } else {
-      setUserData({
-        ...userData,
-        cart: {
-          ...userData.cart,
-          [orderTitle]: {
-            price: order.price,
-            purchased: 1,
-            total: function () {
-              return this.price * this.purchased;
+      setUserData(() => {
+        return {
+          ...userData,
+          cart: {
+            ...userData.cart,
+            [orderTitle]: {
+              price: order.price,
+              purchased: 1,
+              total: function () {
+                return this.price * this.purchased;
+              }
             }
-          }
-        }
+          },
+          searchResults: returnedList
+        };
       });
     }
-    changeInStock(menulist, "minus");
+
+    setMenulist(changeInStock(menulist, "minus"));
+    console.log("userData", userData);
   };
   const reduceOrder = () => {
+    const returnedList = changeInStock(userData.searchResults, "minus");
     if (userData.cart[orderTitle]) {
       if (userData.cart[orderTitle].purchased <= 1) {
         let newCart = userData.cart;
         delete newCart[orderTitle];
         setUserData({
           ...userData,
-          cart: newCart
+          cart: newCart,
+          searchResults: returnedList
         });
       } else {
         setUserData({
@@ -70,10 +82,11 @@ const AddToCart = ({ order }) => {
               ...userData.cart[orderTitle],
               purchased: userData.cart[orderTitle].purchased - 1
             }
-          }
+          },
+          searchResults: returnedList
         });
       }
-      changeInStock(menulist, "add");
+      setMenulist(changeInStock(menulist, "add"));
     }
   };
 
