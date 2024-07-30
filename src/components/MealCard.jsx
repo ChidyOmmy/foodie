@@ -5,19 +5,23 @@ import {
   CardActions,
   CardMedia,
   Typography,
-  Stack
+  Stack,
+  Skeleton
 } from "@mui/material";
+import { useState } from "react";
 import AddToCart from "./AddToCart";
 
 import Ratings from "./Ratings";
 
 const MealCard = ({ purchased, meal }) => {
   const theme = useTheme();
+  const [loaded, setLoaded] = useState(true);
   return (
-    <Card sx={{ cursor: "hand" }}>
+    <Card>
       <Stack
         direction='row'
         sx={{
+          zIndex: 2,
           justifyContent: "space-between",
           position: "absolute",
           bottom: 50,
@@ -35,14 +39,29 @@ const MealCard = ({ purchased, meal }) => {
         </Typography>
         <Ratings meal={meal} />
       </Stack>
-      <CardMedia
-        component='img'
-        src={meal.image}
-        alt='image of food'
-        sx={{
-          width: "100%"
-        }}
-      />
+      {loaded ? (
+        <CardMedia
+          component='img'
+          onLoad={() => setLoaded(true)}
+          loading='lazy'
+          src={meal.image}
+          alt='image of food'
+          height={410}
+          sx={{
+            width: "100%",
+            cursor: "pointer"
+          }}
+        />
+      ) : (
+        <Skeleton
+          sx={{ backgroundColor: "#ccc" }}
+          animation='wave'
+          variant='rectangular'
+          width='inherit'
+          height={410}
+        />
+      )}
+
       <CardActions
         sx={{
           display: "flex",
