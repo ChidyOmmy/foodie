@@ -26,7 +26,8 @@ export const user = {
         return this.price * this.purchased;
       }
     }
-  }
+  },
+  searchResults: []
 };
 
 export const menu = [
@@ -137,9 +138,9 @@ export const menu = [
     description: "Chapati with a vegan potato roast"
   },
   {
-    title: "Chips with eggs",
+    title: "Chips with eggs and smoked meat",
     image: zegemishkaki,
-    price: 3000,
+    price: 4000,
     inStock: 6,
     ratings: 4.5,
     description: "biryani with a quarter kilo of meat"
@@ -155,7 +156,7 @@ export const menu = [
   {
     title: "Chips with eggs",
     image: chipszege,
-    price: 4000,
+    price: 3000,
     inStock: 6,
     ratings: 5.0,
     description: "Chips with eggs and some tomato sauce"

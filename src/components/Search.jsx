@@ -1,7 +1,7 @@
 import { styled } from "@mui/material/styles";
 import { Button, debounce, IconButton, Box } from "@mui/material";
 import { useContext, useState } from "react";
-import { MenuContext } from "../App";
+import { MenuContext, UserContext } from "../App";
 
 import Clear from "@mui/icons-material/Clear";
 
@@ -26,22 +26,24 @@ const SearchBox = styled("span")(({ theme }) => ({
 
 const Search = () => {
   const [menulist, setMenulist] = useContext(MenuContext);
+  const [userData, setUserData] = useContext(UserContext);
   const [searchTerm, setSearchTerm] = useState("");
 
   const debouncedFilterItems = debounce(() => {
     const filteredItems = menulist.filter((item) =>
       item.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    setMenulist(filteredItems);
+    setUserData({ ...userData, searchResults: filteredItems });
   }, 600);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
     if (searchTerm === "") {
-      setMenulist(() => menulist);
+      setUserData({ ...userData, searchResults: [] });
       return;
     }
     debouncedFilterItems();
+    console.log(userData.searchResults);
   };
 
   return (
@@ -56,7 +58,7 @@ const Search = () => {
       <IconButton
         onClick={() => {
           setSearchTerm("");
-          setMenulist(() => menulist);
+          setUserData({ ...userData, searchResults: [] });
         }}>
         <Clear />
       </IconButton>
