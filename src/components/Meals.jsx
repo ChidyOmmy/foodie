@@ -1,15 +1,5 @@
 import { useContext, useState, useEffect } from "react";
-import {
-  Box,
-  ImageList,
-  ImageListItem,
-  Typography,
-  Chip,
-  Avatar,
-  Stack,
-  debounce
-} from "@mui/material";
-import MealCard from "./MealCard";
+import { Box, Typography, Chip, Avatar, Stack, debounce } from "@mui/material";
 import MealsList from "./MealsList";
 import { MenuContext, UserContext } from "../App";
 import meal from "../images/meal.jpg";
@@ -37,9 +27,9 @@ const categoriesList = [
   { title: "wheat", image: chapatimaini }
 ];
 const Meals = () => {
-  const [menulist, setMenuList] = useContext(MenuContext);
+  const [menulist] = useContext(MenuContext);
   const [userData, setUserData] = useContext(UserContext);
-  const [categories, setCategories] = useState(categoriesList);
+  const [categories] = useState(categoriesList);
   const [searchTerm, setSearchTerm] = useState("");
 
   const debouncedFilterItems = debounce((keyword) => {
@@ -70,8 +60,14 @@ const Meals = () => {
   return (
     <Box sx={{ padding: 0, marginTop: 10 }}>
       <Typography variant='h5'>Favorable,this time of the year</Typography>
-      <Stack direction='row' spacing={1}>
+      <Stack
+        direction='row'
+        sx={{
+          flexWrap: "wrap",
+          maxWidth: "100%"
+        }}>
         <Chip
+          sx={{ marginTop: 1 }}
           disabled={searchTerm === "" || searchTerm === "all" ? true : false}
           onClick={() => {
             handleSearchChange("all");
@@ -82,6 +78,7 @@ const Meals = () => {
         />
         {categories.map((category) => (
           <Chip
+            sx={{ marginTop: 1 }}
             disabled={searchTerm === category.title ? true : false}
             onClick={() => {
               handleSearchChange(category.title);

@@ -1,4 +1,4 @@
-import { Button, ButtonGroup } from "@mui/material";
+import { Button, ButtonGroup, Tooltip } from "@mui/material";
 import { useContext } from "react";
 import { UserContext, MenuContext } from "../App";
 
@@ -91,38 +91,41 @@ const AddToCart = ({ order }) => {
   };
 
   return (
-    <ButtonGroup variant='contained'>
-      {userData.cart[orderTitle] ? (
-        <Button
-          onClick={() => {
-            reduceOrder();
-          }}>
-          -
-        </Button>
-      ) : (
-        <></>
-      )}
+    <Tooltip
+      title={order.inStock ? `${order.inStock} in stock` : "stock is empty"}>
+      <ButtonGroup variant='contained'>
+        {userData.cart[orderTitle] ? (
+          <Button
+            onClick={() => {
+              reduceOrder();
+            }}>
+            -
+          </Button>
+        ) : (
+          <></>
+        )}
 
-      <Button
-        disabled={order.inStock < 1 ? true : false}
-        color={userData.cart[orderTitle] ? "secondary" : "primary"}
-        variant='contained'
-        onClick={() => addOrder()}>
-        Add To Cart
-      </Button>
-      {userData.cart[orderTitle] ? (
         <Button
           disabled={order.inStock < 1 ? true : false}
-          onClick={() => {
-            addOrder();
-            console.log("in order stock", order.inStock);
-          }}>
-          +
+          color={userData.cart[orderTitle] ? "secondary" : "primary"}
+          variant='contained'
+          onClick={() => addOrder()}>
+          Add To Cart
         </Button>
-      ) : (
-        <></>
-      )}
-    </ButtonGroup>
+        {userData.cart[orderTitle] ? (
+          <Button
+            disabled={order.inStock < 1 ? true : false}
+            onClick={() => {
+              addOrder();
+              console.log("in order stock", order.inStock);
+            }}>
+            +
+          </Button>
+        ) : (
+          <></>
+        )}
+      </ButtonGroup>
+    </Tooltip>
   );
 };
 

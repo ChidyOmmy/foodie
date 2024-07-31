@@ -1,14 +1,30 @@
 import { useContext } from "react";
 import { UserContext } from "../App";
 
-import { ImageListItem, ImageList } from "@mui/material";
+import { ImageListItem, ImageList, useMediaQuery } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import MealCard from "./MealCard";
 
 const MealsList = ({ list }) => {
-  const [userData, setuserData] = useContext(UserContext);
+  const [userData] = useContext(UserContext);
+  const theme = useTheme();
+  const mobile = useMediaQuery(theme.breakpoints.up("xs"));
+  const tablet = useMediaQuery(theme.breakpoints.up("sm"));
+  const desktop = useMediaQuery(theme.breakpoints.up("lg"));
+
+  const cols = () => {
+    if (desktop) return 3;
+    if (tablet) return 2;
+    if (mobile) return 1;
+  };
 
   return (
-    <ImageList width='100%' variant='masonry' cols={3} gap={2}>
+    <ImageList
+      width='100%'
+      sx={{ maxWidth: "100%" }}
+      variant='masonry'
+      cols={cols()}
+      gap={2}>
       {list.map((menu) => (
         <ImageListItem key={menu.image}>
           <MealCard

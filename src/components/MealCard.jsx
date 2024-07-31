@@ -17,7 +17,7 @@ const MealCard = ({ purchased, meal }) => {
   const theme = useTheme();
   const [loaded, setLoaded] = useState(true);
   return (
-    <Card>
+    <Card sx={{ maxWidth: "100%" }}>
       <Stack
         direction='row'
         sx={{
@@ -48,16 +48,15 @@ const MealCard = ({ purchased, meal }) => {
           alt='image of food'
           height={410}
           sx={{
-            width: "100%",
+            maxWidth: "100%",
             cursor: "pointer"
           }}
         />
       ) : (
         <Skeleton
-          sx={{ backgroundColor: "#ccc" }}
+          sx={{ backgroundColor: "#ccc", maxWidth: "100%" }}
           animation='wave'
           variant='rectangular'
-          width='inherit'
           height={410}
         />
       )}
@@ -94,7 +93,7 @@ const MealCard = ({ purchased, meal }) => {
           <></>
         )}
         <Box>
-          <Typography component='b' sx={{ color: "#fff" }}>
+          <Typography sx={{ color: "#fff", fontWeight: 500 }}>
             TZS {meal.price}
           </Typography>
         </Box>

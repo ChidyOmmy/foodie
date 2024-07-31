@@ -10,7 +10,10 @@ const UserInput = styled("input")(({ theme }) => ({
   m: 0,
   outline: "none",
   border: "none",
-  textDecoration: "none !important"
+  textDecoration: "none !important",
+  [theme.breakpoints.down("sm")]: {
+    width: "35ch"
+  }
 }));
 
 const SearchBox = styled("span")(({ theme }) => ({
@@ -21,11 +24,15 @@ const SearchBox = styled("span")(({ theme }) => ({
   borderRadius: 15,
   padding: 0,
   paddingLeft: 20,
-  filter: theme.filter.dropShadow
+  filter: theme.filter.dropShadow,
+  [theme.breakpoints.down("sm")]: {
+    maxWidth: "100%",
+    margin: 0
+  }
 }));
 
 const Search = () => {
-  const [menulist, setMenulist] = useContext(MenuContext);
+  const [menulist] = useContext(MenuContext);
   const [userData, setUserData] = useContext(UserContext);
   const [searchTerm, setSearchTerm] = useState("");
 

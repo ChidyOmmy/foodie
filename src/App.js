@@ -5,6 +5,9 @@ import { ThemeProvider } from "@mui/material";
 import { theme } from "./theme";
 import Hero from "./components/Hero";
 import Meals from "./components/Meals";
+import SpecialOffers from "./components/SpecialOffers";
+import AdditionalMessage from "./components/AdditionalMessage";
+import Footer from "./components/Footer";
 import { menu, user } from "./Context";
 
 export const MenuContext = createContext();
@@ -22,7 +25,10 @@ function App() {
           <Container>
             <Hero />
             <Meals />
+            <SpecialOffers />
+            <AdditionalMessage />
           </Container>
+          <Footer />
         </UserContext.Provider>
       </MenuContext.Provider>
     </ThemeProvider>
