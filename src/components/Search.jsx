@@ -1,5 +1,5 @@
 import { styled } from "@mui/material/styles";
-import { Button, debounce, IconButton, Box } from "@mui/material";
+import { Button, debounce, IconButton } from "@mui/material";
 import { useContext, useState } from "react";
 import { MenuContext, UserContext } from "../App";
 
