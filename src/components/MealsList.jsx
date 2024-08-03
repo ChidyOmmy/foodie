@@ -29,8 +29,9 @@ const MealsList = ({ list }) => {
         <ImageListItem key={menu.image}>
           <MealCard
             purchased={
-              userData.cart[menu.title]
-                ? userData.cart[menu.title].purchased
+              userData.cart.find((object) => object.id === menu.id)
+                ? userData.cart.find((object) => object.id === menu.id)
+                    .purchased
                 : 0
             }
             meal={menu}

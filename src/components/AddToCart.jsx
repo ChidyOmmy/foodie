@@ -3,7 +3,6 @@ import { useContext } from "react";
 import { UserContext, MenuContext } from "../App";
 
 const AddToCart = ({ order }) => {
-  const orderTitle = order.title;
   const [userData, setUserData] = useContext(UserContext);
   const [menulist, setMenulist] = useContext(MenuContext);
 
@@ -25,18 +24,24 @@ const AddToCart = ({ order }) => {
   }
 
   const addOrder = () => {
+    const orderId = order.id;
     const returnedList = changeInStock(userData.searchResults, "minus");
-    if (userData.cart[orderTitle]) {
+    const orderInCart = userData.cart.find((object) => object.id === orderId);
+    if (orderInCart) {
+      console.log("order is in cart", userData);
+      const index = userData.cart.indexOf(orderInCart);
       setUserData(() => {
         return {
           ...userData,
-          cart: {
-            ...userData.cart,
-            [orderTitle]: {
-              ...userData.cart[orderTitle],
-              purchased: userData.cart[orderTitle].purchased + 1
-            }
-          },
+          cart: userData.cart.map((object) =>
+            object.id === orderId
+              ? {
+                  ...orderInCart,
+                  inStock: order.inStock - 1,
+                  purchased: userData.cart[index].purchased + 1
+                }
+              : object
+          ),
           searchResults: returnedList
         };
       });
@@ -44,57 +49,66 @@ const AddToCart = ({ order }) => {
       setUserData(() => {
         return {
           ...userData,
-          cart: {
+          cart: [
             ...userData.cart,
-            [orderTitle]: {
-              price: order.price,
+            {
+              ...order,
+              inStock: order.inStock - 1,
               purchased: 1,
               total: function () {
                 return this.price * this.purchased;
               }
             }
-          },
-          searchResults: returnedList
+          ]
         };
       });
+      console.log("testing", userData.cart);
     }
+    console.log("changed userData", userData.cart);
 
     setMenulist(changeInStock(menulist, "minus"));
-    console.log("userData", userData);
   };
   const reduceOrder = () => {
-    const returnedList = changeInStock(userData.searchResults, "minus");
-    if (userData.cart[orderTitle]) {
-      if (userData.cart[orderTitle].purchased <= 1) {
-        let newCart = userData.cart;
-        delete newCart[orderTitle];
-        setUserData({
-          ...userData,
-          cart: newCart,
-          searchResults: returnedList
+    const orderId = order.id;
+    const returnedList = changeInStock(userData.searchResults, "add");
+    const orderInCart = userData.cart.find((object) => object.id === orderId);
+    if (orderInCart) {
+      const index = userData.cart.indexOf(orderInCart);
+      const remainsOne = userData.cart[index].purchased === 1;
+      if (remainsOne) {
+        setUserData(() => {
+          return {
+            ...userData,
+            cart: userData.cart.filter((object) => object.id !== orderId),
+            searchResults: returnedList
+          };
         });
       } else {
-        setUserData({
-          ...userData,
-          cart: {
-            ...userData.cart,
-            [orderTitle]: {
-              ...userData.cart[orderTitle],
-              purchased: userData.cart[orderTitle].purchased - 1
-            }
-          },
-          searchResults: returnedList
+        setUserData(() => {
+          return {
+            ...userData,
+            cart: userData.cart.map((object) =>
+              object.id === orderId
+                ? {
+                    ...orderInCart,
+                    inStock: order.inStock + 1,
+                    purchased: userData.cart[index].purchased - 1
+                  }
+                : object
+            ),
+            searchResults: returnedList
+          };
         });
       }
-      setMenulist(changeInStock(menulist, "add"));
     }
-  };
 
+    setMenulist(changeInStock(menulist, "add"));
+  };
   return (
     <Tooltip
       title={order.inStock ? `${order.inStock} in stock` : "stock is empty"}>
       <ButtonGroup variant='contained'>
-        {userData.cart[orderTitle] ? (
+        {userData.cart.find((object) => object.id === order.id) ? (
           <Button
             onClick={() => {
               reduceOrder();
@@ -107,17 +121,20 @@ const AddToCart = ({ order }) => {
 
         <Button
           disabled={order.inStock < 1 ? true : false}
-          color={userData.cart[orderTitle] ? "secondary" : "primary"}
+          color={
+            userData.cart.find((object) => object.id === order.id)
+              ? "secondary"
+              : "primary"
+          }
           variant='contained'
           onClick={() => addOrder()}>
           Add To Cart
         </Button>
-        {userData.cart[orderTitle] ? (
+        {userData.cart.find((object) => object.id === order.id) ? (
           <Button
             disabled={order.inStock < 1 ? true : false}
             onClick={() => {
               addOrder();
-              console.log("in order stock", order.inStock);
             }}>
             +
           </Button>
