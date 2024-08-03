@@ -1,14 +1,14 @@
 import { React, useContext, useState, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import { Badge, debounce, Grow } from "@mui/material";
-import { Toolbar, Typography, IconButton } from "@mui/material";
+import { Toolbar, Typography } from "@mui/material";
 import { UserContext } from "../App";
 import { useTheme } from "@mui/material/styles";
-import ShoppingCart from "@mui/icons-material/ShoppingCart";
+import CartDialog from "./CartDialog";
 
 export default function Navbar() {
   const theme = useTheme();
-  const [userData, setUserData] = useContext(UserContext);
+  const [userData] = useContext(UserContext);
 
   const showTotal = () => {
     let totalPurchases = 0;
@@ -54,9 +54,7 @@ export default function Navbar() {
             LOGO
           </Typography>
           <Badge badgeContent={showTotal()} color='primary'>
-            <IconButton>
-              <ShoppingCart color='primary' />
-            </IconButton>
+            <CartDialog />
           </Badge>
         </Toolbar>
       </AppBar>

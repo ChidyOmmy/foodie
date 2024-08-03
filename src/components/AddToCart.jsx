@@ -1,8 +1,12 @@
 import { Button, ButtonGroup, Tooltip } from "@mui/material";
 import { useContext } from "react";
 import { UserContext, MenuContext } from "../App";
+import ArrowDropUpRounded from "@mui/icons-material/ArrowDropUpRounded";
+import ArrowDropDownRounded from "@mui/icons-material/ArrowDropDownRounded";
+import Stack from "@mui/material/Stack";
+import IconButton from "@mui/material/IconButton";
 
-const AddToCart = ({ order }) => {
+const AddToCart = ({ order, arrowButtons = false }) => {
   const [userData, setUserData] = useContext(UserContext);
   const [menulist, setMenulist] = useContext(MenuContext);
 
@@ -107,41 +111,63 @@ const AddToCart = ({ order }) => {
   return (
     <Tooltip
       title={order.inStock ? `${order.inStock} in stock` : "stock is empty"}>
-      <ButtonGroup variant='contained'>
-        {userData.cart.find((object) => object.id === order.id) ? (
-          <Button
-            onClick={() => {
-              reduceOrder();
-            }}>
-            -
-          </Button>
-        ) : (
-          <></>
-        )}
+      {arrowButtons ? (
+        <Stack
+          direction='column'
+          spacing={0}
+          sx={{
+            width: 50,
+            height: 50,
+            alignItems: "center",
+            justifyContent: "center"
+          }}>
+          <IconButton
+            size='small'
+            disabled={order.inStock < 1 ? true : false}
+            onClick={() => addOrder()}>
+            <ArrowDropUpRounded />
+          </IconButton>
+          <IconButton size='small' onClick={() => reduceOrder()}>
+            <ArrowDropDownRounded />
+          </IconButton>
+        </Stack>
+      ) : (
+        <ButtonGroup variant='contained'>
+          {userData.cart.find((object) => object.id === order.id) ? (
+            <Button
+              onClick={() => {
+                reduceOrder();
+              }}>
+              -
+            </Button>
+          ) : (
+            <></>
+          )}
 
-        <Button
-          disabled={order.inStock < 1 ? true : false}
-          color={
-            userData.cart.find((object) => object.id === order.id)
-              ? "secondary"
-              : "primary"
-          }
-          variant='contained'
-          onClick={() => addOrder()}>
-          Add To Cart
-        </Button>
-        {userData.cart.find((object) => object.id === order.id) ? (
           <Button
             disabled={order.inStock < 1 ? true : false}
-            onClick={() => {
-              addOrder();
-            }}>
-            +
+            color={
+              userData.cart.find((object) => object.id === order.id)
+                ? "secondary"
+                : "primary"
+            }
+            variant='contained'
+            onClick={() => addOrder()}>
+            Add To Cart
           </Button>
-        ) : (
-          <></>
-        )}
-      </ButtonGroup>
+          {userData.cart.find((object) => object.id === order.id) ? (
+            <Button
+              disabled={order.inStock < 1 ? true : false}
+              onClick={() => {
+                addOrder();
+              }}>
+              +
+            </Button>
+          ) : (
+            <></>
+          )}
+        </ButtonGroup>
+      )}
     </Tooltip>
   );
 };

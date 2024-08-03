@@ -9,6 +9,7 @@ import IconButton from "@mui/material/IconButton";
 import ShoppingCart from "@mui/icons-material/ShoppingCart";
 
 import CartTable from "./CartTable";
+import { UserContext } from "../App";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='up' ref={ref} {...props} />;
@@ -16,6 +17,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const CartDialog = () => {
   const [open, setOpen] = React.useState(false);
+  const [userData] = React.useContext(UserContext);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -41,8 +43,13 @@ const CartDialog = () => {
           <CartTable />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={handleClose}>Agree</Button>
+          <Button onClick={handleClose}>Close</Button>
+          <Button
+            variant='contained'
+            disabled={userData.cart.length === 0 ? true : false}
+            onClick={handleClose}>
+            Checkout
+          </Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>
