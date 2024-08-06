@@ -1,14 +1,18 @@
-import { useState, createContext } from "react";
+import { useState, createContext, lazy, Suspense } from "react";
 import { Container } from "@mui/material";
 import Navbar from "./components/Navbar";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "./theme";
-import Hero from "./components/Hero";
-import Meals from "./components/Meals";
-import SpecialOffers from "./components/SpecialOffers";
-import AdditionalMessage from "./components/AdditionalMessage";
-import Footer from "./components/Footer";
+import { Routes, Route } from "react-router-dom";
+import LoadingPage from "./pages/LoadingPage";
 import { menu, user } from "./Context";
+import Footer from "./components/Footer";
+
+const LandingPage = lazy(() => import("./pages/LandingPage"));
+const CheckOutPage = lazy(() => import("./pages/CheckOutPage"));
+const ProductPage = lazy(() => import("./pages/ProductPage"));
+const AboutPage = lazy(() => import("./pages/AboutPage"));
+const Error404 = lazy(() => import("./pages/Error404"));
 
 export const MenuContext = createContext();
 export const UserContext = createContext();
@@ -23,10 +27,16 @@ function App() {
         <UserContext.Provider value={[userData, setUserData]}>
           <Navbar />
           <Container>
-            <Hero />
-            <Meals />
-            <SpecialOffers />
-            <AdditionalMessage />
+            <Suspense fallback={<LoadingPage />}>
+              <Routes>
+                <Route path='/' element={<LandingPage />} />
+                <Route path='/product' element={<ProductPage />} />
+                <Route path='/product/:id' element={<ProductPage />} />
+                <Route path='/checkout' element={<CheckOutPage />} />
+                <Route path='/about' element={<AboutPage />} />
+                <Route path='*' element={<Error404 />} />
+              </Routes>
+            </Suspense>
           </Container>
           <Footer />
         </UserContext.Provider>

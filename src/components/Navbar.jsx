@@ -1,10 +1,12 @@
 import { React, useContext, useState, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
-import { Badge, debounce, Grow } from "@mui/material";
+import { Badge, debounce, Grow, Stack, Button } from "@mui/material";
 import { Toolbar, Typography } from "@mui/material";
 import { UserContext } from "../App";
 import { useTheme } from "@mui/material/styles";
 import CartDialog from "./CartDialog";
+
+import { NavLink } from "react-router-dom";
 
 export default function Navbar() {
   const theme = useTheme();
@@ -44,6 +46,7 @@ export default function Navbar() {
     });
     return () => {};
   });
+
   return (
     <Grow in={navDisplay}>
       <AppBar
@@ -53,9 +56,17 @@ export default function Navbar() {
           <Typography variant='h6' color='primary'>
             LOGO
           </Typography>
-          <Badge badgeContent={showTotal()} color='primary'>
-            <CartDialog />
-          </Badge>
+          <Stack direction='row'>
+            <NavLink to='/'>
+              <Button>Home</Button>
+            </NavLink>
+            <NavLink to='/about'>
+              <Button>About</Button>
+            </NavLink>
+            <Badge badgeContent={showTotal()} color='primary'>
+              <CartDialog />
+            </Badge>
+          </Stack>
         </Toolbar>
       </AppBar>
     </Grow>
