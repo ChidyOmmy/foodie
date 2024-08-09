@@ -13,7 +13,6 @@ import { UserContext, MenuContext } from "../App";
 
 const CartTable = () => {
   const [userData, setUserData] = useContext(UserContext);
-  const [menulist, setMenulist] = useContext(MenuContext);
 
   const totalprice = () => {
     let total = 0;
@@ -25,7 +24,7 @@ const CartTable = () => {
     return total;
   };
   return (
-    <TableContainer component={Paper}>
+    <TableContainer sx={{ width: 540, maxWidth: "100%" }} component={Paper}>
       {totalprice() !== 0 ? (
         <Table sx={{ maxWidth: "100%" }} size='small' aria-label='Cart table'>
           <TableRow>

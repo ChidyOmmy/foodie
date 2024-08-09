@@ -23,7 +23,7 @@ const MealCard = ({ purchased, meal, variant = "default" }) => {
     <>
       {variant === "standalone" ? (
         <Box>
-          <Card sx={{ width: "80%", maxWidth: "100%" }}>
+          <Card sx={{ width: "100%", maxWidth: "100%" }}>
             <Stack
               direction='row'
               spacing={2}

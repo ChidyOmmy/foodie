@@ -1,5 +1,12 @@
 import { useContext } from "react";
-import { Button, Box, Stack, Typography } from "@mui/material";
+import {
+  Button,
+  Box,
+  Stack,
+  Typography,
+  TextField,
+  Avatar
+} from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { MenuContext, UserContext } from "../App";
 
@@ -20,8 +27,8 @@ const ProductPage = () => {
         marginTop: 5,
         marginBottom: 5,
         display: "flex",
-        justifyContent: "center",
-        flexDirection: "row"
+        flexDirection: "row",
+        width: "80%"
       }}>
       <Box>
         <Button onClick={() => navigate(-1)}> Go back</Button>
@@ -39,6 +46,44 @@ const ProductPage = () => {
         <Stack direction='row' justifyContent='space-between'>
           <Typography> {menu.ratings} Stars </Typography>
           <Typography>340 Reviews </Typography>
+        </Stack>
+        <Stack mt={2} direction='column'>
+          <Stack direction='row' spacing={2} alignItemsItems='center' mb={2}>
+            <Avatar>M</Avatar>
+            <Typography>Guest(Anonymous)</Typography>
+          </Stack>
+          <TextField mt={2} placeholder='Leave a comment' />
+          <Ratings meal={menu} />
+          <Stack direction='column' mt={5}>
+            <Stack direction='row' justifyContent='space-between'>
+              <Stack direction='row' spacing={1} alignItems='center'>
+                <Avatar>K</Avatar>
+                <Typography>Average Meal Enjoyer</Typography>
+              </Stack>
+              <Stack direction='row' alignItems='center'>
+                <Typography> {menu.ratings} Stars </Typography>
+                <Ratings meal={menu} />
+              </Stack>
+            </Stack>
+            <Typography>
+              This is my favorite dish and it's well cooked in here. the
+              delivery was on time and the food came hot so 5 Stars
+            </Typography>
+          </Stack>
+          <Typography sx={{ alignSelf: "flex-end" }}>
+            ...more reviews
+          </Typography>
+        </Stack>
+        <Stack direction='row' spacing={5}>
+          <Button variant='contained' onClick={() => navigate("/checkout")}>
+            Checkout Now
+          </Button>
+          <Button
+            onClick={() => navigate("/")}
+            color='secondary'
+            variant='outlined'>
+            View More Orders
+          </Button>
         </Stack>
       </Box>
     </Box>

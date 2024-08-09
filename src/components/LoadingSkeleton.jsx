@@ -1,15 +1,9 @@
 import React from "react";
 import { Skeleton, Stack } from "@mui/material";
 
-const LoadingPage = () => {
+const LoadingSkeleton = () => {
   return (
-    <Stack direction='row' spacing={2}>
-      <Skeleton
-        sx={{ backgroundColor: "#ccc", maxWidth: "100%" }}
-        animation='wave'
-        variant='rectangular'
-        height={410}
-      />
+    <Stack direction='row' spacing={2} m={5}>
       <Skeleton
         sx={{ backgroundColor: "#ccc", maxWidth: "100%" }}
         animation='wave'
@@ -26,4 +20,4 @@ const LoadingPage = () => {
   );
 };
 
-export default LoadingPage;
+export default LoadingSkeleton;

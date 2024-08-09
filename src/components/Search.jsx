@@ -4,8 +4,7 @@ import { useContext, useState } from "react";
 import { MenuContext, UserContext } from "../App";
 
 import Clear from "@mui/icons-material/Clear";
-
-const UserInput = styled("input")(({ theme }) => ({
+export const UserInput = styled("input")(({ theme }) => ({
   width: "35ch",
   m: 0,
   outline: "none",
@@ -16,7 +15,7 @@ const UserInput = styled("input")(({ theme }) => ({
   }
 }));
 
-const SearchBox = styled("span")(({ theme }) => ({
+export const SearchBox = styled("span")(({ theme }) => ({
   backgroundColor: "#fff",
   display: "inline-flex",
   flexDirection: "row",

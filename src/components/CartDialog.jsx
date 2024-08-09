@@ -7,7 +7,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import IconButton from "@mui/material/IconButton";
 import ShoppingCart from "@mui/icons-material/ShoppingCart";
-
+import { useNavigate } from "react-router-dom";
 import CartTable from "./CartTable";
 import { UserContext } from "../App";
 
@@ -26,7 +26,7 @@ const CartDialog = () => {
   const handleClose = () => {
     setOpen(false);
   };
-
+  const navigate = useNavigate();
   return (
     <React.Fragment>
       <IconButton onClick={handleClickOpen}>
@@ -47,7 +47,10 @@ const CartDialog = () => {
           <Button
             variant='contained'
             disabled={userData.cart.length === 0 ? true : false}
-            onClick={handleClose}>
+            onClick={() => {
+              handleClose();
+              navigate("/checkout");
+            }}>
             Checkout
           </Button>
         </DialogActions>
