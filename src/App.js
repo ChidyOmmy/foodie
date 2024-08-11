@@ -1,7 +1,7 @@
-import { useState, createContext, lazy, Suspense } from "react";
+import { useState, createContext, lazy, Suspense, useEffect } from "react";
 import { Container, Box, Skeleton, Stack } from "@mui/material";
 import Navbar from "./components/Navbar";
-import { ThemeProvider } from "@mui/material";
+import { ThemeProvider,Paper } from "@mui/material";
 import { theme } from "./theme";
 import { Routes, Route } from "react-router-dom";
 import { menu, user } from "./Context";
@@ -42,11 +42,47 @@ const mytheme = theme;
 function App() {
   const [menulist, setMenulist] = useState(menu);
   const [userData, setUserData] = useState(user);
+
+  // Effect hook to fetch data when the component mounts
+  useEffect(() => {
+    // Function to fetch data from the API
+    const fetchData = async () => {
+      try {
+        // Make the fetch request
+        const response = await fetch("http://localhost:8000", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+
+        // Check if the response is successful
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        // Parse the JSON data
+        const result = await response.json();
+
+        // Update the state with the fetched data
+        console.log(result)
+        setMenulist(result);
+      } catch (error) {
+        // Handle errors
+        console.error("There was a problem with the fetch operation:", error);
+      }
+    };
+
+    // Call the fetch function
+    fetchData();
+  }, []); // Empty dependency array means this effect runs once after the initial render
+
   return (
     <ThemeProvider theme={mytheme}>
       <MenuContext.Provider value={[menulist, setMenulist]}>
         <UserContext.Provider value={[userData, setUserData]}>
-          <Navbar />
+          <Paper>
+            <Navbar />
           <Container>
             <Suspense fallback={<LoadingSkeleton />}>
               <Routes>
@@ -60,6 +96,8 @@ function App() {
             </Suspense>
           </Container>
           <Footer />
+          </Paper>
+          
         </UserContext.Provider>
       </MenuContext.Provider>
     </ThemeProvider>

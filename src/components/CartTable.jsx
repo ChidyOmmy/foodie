@@ -13,16 +13,21 @@ import { UserContext, MenuContext } from "../App";
 
 const CartTable = () => {
   const [userData, setUserData] = useContext(UserContext);
-
   const totalprice = () => {
-    let total = 0;
-    let i = 0;
-    while (i < userData.cart.length) {
-      total = total + userData.cart[i].total();
-      i++;
+    if (!Array.isArray(userData.cart)) {
+    console.error("cart is not an array");
+    return 0;
+  }
+
+  return userData.cart.reduce((total, item) => {
+    if (typeof item.total === "function") {
+      return total + item.total();
+    } else {
+      console.warn("item does not have a total method");
+      return total;
     }
-    return total;
-  };
+  }, 0);
+};
   return (
     <TableContainer sx={{ width: 540, maxWidth: "100%" }} component={Paper}>
       {totalprice() !== 0 ? (
@@ -43,7 +48,7 @@ const CartTable = () => {
                     alt={order.title}
                     component='img'
                     sx={{ width: "40%" }}
-                    src={order.image}
+                    src={`http://localhost:8000/${order.image}`}
                   />
                 </TableCell>
                 <TableCell>{order.title}</TableCell>

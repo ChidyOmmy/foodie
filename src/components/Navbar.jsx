@@ -15,10 +15,10 @@ export default function Navbar() {
   const showTotal = () => {
     let totalPurchases = 0;
     let i = 0;
-    while (i < userData.cart.length) {
-      totalPurchases = totalPurchases + userData.cart[i].purchased;
-      i++;
-    }
+      while (i < userData.cart.length) {
+        totalPurchases = totalPurchases + userData.cart[i].purchased;
+        i++;
+      }
     return totalPurchases;
   };
 

@@ -18,22 +18,7 @@ import desserts from "./images/desserts.jpg";
 import veganbreakfast from "./images/veganbreakfast.jpg";
 
 export const user = {
-  cart: [
-    {
-      id: 1,
-      title: "Steak biryani",
-      image: meal,
-      price: 5000,
-      inStock: 0,
-      ratings: 4.5,
-      category: ["Protein", "Meat", "Lunch"],
-      description: "biryani with a quarter kilo of meat",
-      purchased: 2,
-      total: function () {
-        return this.price * this.purchased;
-      }
-    }
-  ],
+  cart: [],
   searchResults: []
 };
 

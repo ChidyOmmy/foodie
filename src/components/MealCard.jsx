@@ -38,7 +38,7 @@ const MealCard = ({ purchased, meal, variant = "default" }) => {
                 sx={{ width: "70%" }}
                 component='img'
                 alt={meal.title}
-                src={meal.image}
+                src={`http://localhost:8000/${meal.image}`}
               />
               <Stack
                 sx={{
@@ -128,7 +128,7 @@ const MealCard = ({ purchased, meal, variant = "default" }) => {
               component='img'
               onLoad={() => setLoaded(true)}
               loading='lazy'
-              src={meal.image}
+              src={`http://localhost:8000/${meal.image}`}
               alt='image of food'
               height={410}
               sx={{
