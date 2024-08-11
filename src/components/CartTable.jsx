@@ -5,6 +5,7 @@ import TableBody from "@mui/material/TableBody";
 import Table from "@mui/material/Table";
 import Paper from "@mui/material/Paper";
 import TableRow from "@mui/material/TableRow";
+import TableHead from "@mui/material/TableHead";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import AddToCart from "./AddToCart";
@@ -15,31 +16,33 @@ const CartTable = () => {
   const [userData, setUserData] = useContext(UserContext);
   const totalprice = () => {
     if (!Array.isArray(userData.cart)) {
-    console.error("cart is not an array");
-    return 0;
-  }
-
-  return userData.cart.reduce((total, item) => {
-    if (typeof item.total === "function") {
-      return total + item.total();
-    } else {
-      console.warn("item does not have a total method");
-      return total;
+      console.error("cart is not an array");
+      return 0;
     }
-  }, 0);
-};
+
+    return userData.cart.reduce((total, item) => {
+      if (typeof item.total === "function") {
+        return total + item.total();
+      } else {
+        console.warn("item does not have a total method");
+        return total;
+      }
+    }, 0);
+  };
   return (
     <TableContainer sx={{ width: 540, maxWidth: "100%" }} component={Paper}>
       {totalprice() !== 0 ? (
         <Table sx={{ maxWidth: "100%" }} size='small' aria-label='Cart table'>
-          <TableRow>
-            <TableCell sx={{ fontWeight: "bold" }}></TableCell>
-            <TableCell sx={{ fontWeight: "bold" }}>Title</TableCell>
-            <TableCell sx={{ fontWeight: "bold" }}>Quantity</TableCell>
-            <TableCell sx={{ fontWeight: "bold" }}></TableCell>
-            <TableCell sx={{ fontWeight: "bold" }}>Price (each)</TableCell>
-            <TableCell sx={{ fontWeight: "bold" }}>Total Price</TableCell>
-          </TableRow>
+          <TableHead>
+            <TableRow>
+              <TableCell></TableCell>
+              <TableCell>Title</TableCell>
+              <TableCell>Quantity</TableCell>
+              <TableCell></TableCell>
+              <TableCell>Price (each)</TableCell>
+              <TableCell>Total Price</TableCell>
+            </TableRow>
+          </TableHead>
           <TableBody>
             {userData.cart.map((order) => (
               <TableRow key={order.id}>

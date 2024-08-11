@@ -3,62 +3,79 @@ import {
   Box,
   Typography,
   Stack,
-  FormControl,
   FormHelperText,
-  InputLabel,
   TextField,
-  CardHeader,
-  Card,
-  CardActions,
-  CardContent,
-  Button
+  InputAdornment,
+  IconButton,
+  Button,
+  debounce
 } from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { UserInput, SearchBox } from "../components/Search";
 import LocationOn from "@mui/icons-material/LocationOn";
 import delivery from "../images/delivery.png";
 import CartTable from "../components/CartTable";
 import PhoneInputWithCountryCode from "../components/PhoneInputWithCountryCode";
 import VodacomPayCard from "../components/CardWithDigits";
+import CircularIntegration from "../components/CompleteOrder";
 import { UserContext } from "../App";
 
 const CheckOutPage = () => {
-  const [userData, setUserData] = useContext(UserContext);
+  const [userData] = useContext(UserContext);
   const [order, setOrder] = useState({
     location: "salasala",
-    fullname: "",
-    phonenumber: "",
-    additionalinfo: "",
-    transaction: "",
+    fullname: "Rashid Shakili",
+    phonenumber: "255764044285",
+    additionalinfo: "nothing",
+    transaction: "sandvf",
     cart: userData.cart
   });
-  async function postOrder() {
-    try {
-      const response = await fetch("http://localhost:8000/createorder", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-          // If CSRF protection is enabled, include the CSRF token here:
-          // 'X-CSRFToken': getCookie('csrftoken'),
-        },
-        body: JSON.stringify(order)
-      });
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+  const [showConfirmHelper, setShowConfirmHelper] = useState(false);
 
-      const data = await response.json();
-      console.log("Order created successfully:", data);
-    } catch (error) {
-      console.error("There was a problem with the fetch operation:", error);
-    }
-  }
   const handlePhoneNumberChange = (number) => {
     setOrder({
       ...order,
       phonenumber: number
     });
   };
+
+  const handlePasswordChange = (event) => {
+    const newPassword = event.target.value;
+    setPassword(newPassword);
+    debounceValidatePasswordConfirm(newPassword, passwordConfirm);
+  };
+
+  const handlePasswordConfirmChange = (event) => {
+    const newPasswordConfirm = event.target.value;
+    setPasswordConfirm(newPasswordConfirm);
+    setShowConfirmHelper(true);
+    debounceValidatePasswordConfirm(password, newPasswordConfirm);
+  };
+
+  const validatePasswordConfirm = (password, confirmPassword) => {
+    setPasswordError(password !== confirmPassword);
+  };
+
+  const debounceValidatePasswordConfirm = debounce(
+    validatePasswordConfirm,
+    300
+  );
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleShowPasswordConfirm = () => {
+    setShowPasswordConfirm(!showPasswordConfirm);
+  };
+
   return (
     <Box mt={5} mb={5}>
       <Typography>
@@ -143,6 +160,70 @@ const CheckOutPage = () => {
           </Stack>
         </Stack>
       </Stack>
+
+      {/* New Stack for Password and Password Verification */}
+      <Stack direction='row' spacing={2} mt={3} mb={3}>
+        <Stack direction='column' spacing={1}>
+          <TextField
+            id='password'
+            label='Password'
+            variant='outlined'
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={handlePasswordChange}
+            sx={{ width: "35ch" }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position='end'>
+                  <IconButton
+                    onClick={toggleShowPassword}
+                    aria-label='toggle password visibility'
+                    edge='end'>
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+          />
+          <FormHelperText>
+            We'll create your account along with your order.
+          </FormHelperText>
+        </Stack>
+        <Stack direction='column' spacing={1}>
+          <TextField
+            id='password-confirm'
+            label='Confirm Password'
+            variant='outlined'
+            type={showPasswordConfirm ? "text" : "password"}
+            value={passwordConfirm}
+            onChange={handlePasswordConfirmChange}
+            error={passwordError}
+            sx={{ width: "35ch" }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position='end'>
+                  <IconButton
+                    onClick={toggleShowPasswordConfirm}
+                    aria-label='toggle password visibility'
+                    edge='end'>
+                    {showPasswordConfirm ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+          />
+          {showConfirmHelper && (
+            <FormHelperText
+              error={passwordError}
+              sx={{ color: passwordError ? "error.main" : "success.main" }}>
+              {passwordError
+                ? "Passwords do not match. Please try again."
+                : "Passwords match!"}
+            </FormHelperText>
+          )}
+        </Stack>
+      </Stack>
+
       <Typography>
         You can pay right away through M-Pesa, Airtel Money or Tigo Pesa
       </Typography>
@@ -163,21 +244,22 @@ const CheckOutPage = () => {
             transaction: event.target.value
           });
         }}
-        id='full-name'
-        label='Transaction code: '
+        id='transaction-code'
+        label='Transaction code'
         variant='outlined'
         sx={{ width: "35ch" }}
       />
       <Box mt={3}>
-        <Button
-          size='large'
-          variant='contained'
-          onClick={() => {
-            console.log(order);
-            postOrder();
-          }}>
-          COMPLETE ORDER{" "}
-        </Button>
+        {passwordError ? (
+          <>
+            <Typography>Please correct password fields </Typography>
+            <Button disabled>
+              <CircularIntegration order={order} />
+            </Button>
+          </>
+        ) : (
+          <CircularIntegration order={{ ...order, password }} />
+        )}
       </Box>
     </Box>
   );
