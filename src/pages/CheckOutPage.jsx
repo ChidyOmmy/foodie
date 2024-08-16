@@ -8,7 +8,9 @@ import {
   InputAdornment,
   IconButton,
   Button,
-  debounce
+  debounce,
+  Card,
+  CardContent
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -17,6 +19,7 @@ import LocationOn from "@mui/icons-material/LocationOn";
 import delivery from "../images/delivery.png";
 import CartTable from "../components/CartTable";
 import PhoneInputWithCountryCode from "../components/PhoneInputWithCountryCode";
+import LoginCard from "../components/LoginCard";
 import VodacomPayCard from "../components/CardWithDigits";
 import CircularIntegration from "../components/CompleteOrder";
 import { UserContext } from "../App";
@@ -91,6 +94,8 @@ const CheckOutPage = () => {
           sx={{ width: 340, maxWidth: "100%" }}
         />
       </Stack>
+      <Typography>sign in to checkout or fill form below</Typography>
+      <LoginCard />
       <SearchBox>
         <UserInput
           value={order.location}
