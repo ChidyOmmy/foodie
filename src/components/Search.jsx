@@ -1,7 +1,8 @@
 import { styled } from "@mui/material/styles";
 import { Button, debounce, IconButton } from "@mui/material";
 import { useContext, useState } from "react";
-import { MenuContext, UserContext } from "../App";
+import { UserContext } from "../context/UserContext";
+import { MenuContext } from "../context/MenuContext";
 
 import Clear from "@mui/icons-material/Clear";
 export const UserInput = styled("input")(({ theme }) => ({
@@ -31,8 +32,8 @@ export const SearchBox = styled("span")(({ theme }) => ({
 }));
 
 const Search = () => {
-  const [menulist] = useContext(MenuContext);
-  const [userData, setUserData] = useContext(UserContext);
+  const { menulist } = useContext(MenuContext);
+  const { userData, setUserData } = useContext(UserContext);
   const [searchTerm, setSearchTerm] = useState("");
 
   const debouncedFilterItems = debounce(() => {

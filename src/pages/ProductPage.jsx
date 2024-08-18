@@ -8,14 +8,15 @@ import {
   Avatar
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
-import { MenuContext, UserContext } from "../App";
+import { UserContext } from "../context/UserContext";
+import { MenuContext } from "../context/MenuContext";
 
 import MealCard from "../components/MealCard";
 import Ratings from "../components/Ratings";
 
 const ProductPage = () => {
-  const [menulist] = useContext(MenuContext);
-  const [userData] = useContext(UserContext);
+  const { menulist } = useContext(MenuContext);
+  const { userData } = useContext(UserContext);
   const params = useParams();
 
   const menu = menulist.find((object) => object.id === parseInt(params.id));

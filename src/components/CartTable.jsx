@@ -10,10 +10,10 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import AddToCart from "./AddToCart";
 
-import { UserContext, MenuContext } from "../App";
+import { UserContext } from "../context/UserContext";
 
 const CartTable = () => {
-  const [userData, setUserData] = useContext(UserContext);
+  const { userData, setUserData } = useContext(UserContext);
   const totalprice = () => {
     if (!Array.isArray(userData.cart)) {
       console.error("cart is not an array");

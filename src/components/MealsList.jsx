@@ -1,17 +1,17 @@
-import { useContext } from "react";
-import { UserContext } from "../App";
+import React, { useContext, useEffect } from "react";
+import { UserContext } from "../context/UserContext";
 
 import { ImageListItem, ImageList, useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import MealCard from "./MealCard";
 
-const MealsList = ({ list }) => {
-  const [userData] = useContext(UserContext);
+const MealsList = React.memo(({ list }) => {
+  const { userData } = useContext(UserContext);
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.up("xs"));
   const tablet = useMediaQuery(theme.breakpoints.up("sm"));
   const desktop = useMediaQuery(theme.breakpoints.up("lg"));
-
+  useEffect(() => console.log("MealsList mounted"));
   const cols = () => {
     if (desktop) return 3;
     if (tablet) return 2;
@@ -26,20 +26,18 @@ const MealsList = ({ list }) => {
       cols={cols()}
       gap={2}>
       {list.map((menu) => (
-        <ImageListItem key={menu.image}>
-          <MealCard
-            purchased={
-              userData.cart.find((object) => object.id === menu.id)
-                ? userData.cart.find((object) => object.id === menu.id)
-                    .purchased
-                : 0
-            }
-            meal={menu}
-          />
-        </ImageListItem>
+        <MealCard
+          key={menu.id}
+          purchased={
+            userData.cart.find((object) => object.id === menu.id)
+              ? userData.cart.find((object) => object.id === menu.id).purchased
+              : 0
+          }
+          meal={menu}
+        />
       ))}
     </ImageList>
   );
-};
+});
 
 export default MealsList;

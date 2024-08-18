@@ -2,7 +2,7 @@ import { React, useContext, useState, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import { Badge, debounce, Grow, Stack, Button } from "@mui/material";
 import { Toolbar, Typography } from "@mui/material";
-import { UserContext } from "../App";
+import { UserContext } from "../context/UserContext";
 import { useTheme } from "@mui/material/styles";
 import CartDialog from "./CartDialog";
 
@@ -10,15 +10,15 @@ import { NavLink } from "react-router-dom";
 
 export default function Navbar() {
   const theme = useTheme();
-  const [userData] = useContext(UserContext);
+  const { userData } = useContext(UserContext);
 
   const showTotal = () => {
     let totalPurchases = 0;
     let i = 0;
-      while (i < userData.cart.length) {
-        totalPurchases = totalPurchases + userData.cart[i].purchased;
-        i++;
-      }
+    while (i < userData.cart.length) {
+      totalPurchases = totalPurchases + userData.cart[i].purchased;
+      i++;
+    }
     return totalPurchases;
   };
 

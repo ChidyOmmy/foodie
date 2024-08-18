@@ -22,10 +22,10 @@ import PhoneInputWithCountryCode from "../components/PhoneInputWithCountryCode";
 import LoginCard from "../components/LoginCard";
 import VodacomPayCard from "../components/CardWithDigits";
 import CircularIntegration from "../components/CompleteOrder";
-import { UserContext } from "../App";
+import { UserContext } from "../context/UserContext";
 
 const CheckOutPage = () => {
-  const [userData] = useContext(UserContext);
+  const { userData } = useContext(UserContext);
   const [order, setOrder] = useState({
     location: "salasala",
     fullname: "Rashid Shakili",

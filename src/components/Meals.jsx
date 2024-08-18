@@ -1,7 +1,8 @@
 import { useContext, useState, useEffect } from "react";
 import { Box, Typography, Chip, Avatar, Stack, debounce } from "@mui/material";
 import MealsList from "./MealsList";
-import { MenuContext, UserContext } from "../App";
+import { UserContext } from "../context/UserContext";
+import { MenuContext } from "../context/MenuContext";
 import meal from "../images/meal.jpg";
 import chickensticks from "../images/chickensticks.jpg";
 import tanzaniansnacks from "../images/tanzaniansnacks.jpg";
@@ -27,8 +28,8 @@ const categoriesList = [
   { title: "wheat", image: chapatimaini }
 ];
 const Meals = () => {
-  const [menulist] = useContext(MenuContext);
-  const [userData, setUserData] = useContext(UserContext);
+  const { menulist } = useContext(MenuContext);
+  const { userData, setUserData } = useContext(UserContext);
   const [categories] = useState(categoriesList);
   const [searchTerm, setSearchTerm] = useState("");
 

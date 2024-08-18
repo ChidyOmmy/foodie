@@ -7,18 +7,19 @@ import {
   Typography,
   Stack,
   Skeleton,
-  Button
+  ImageListItem
 } from "@mui/material";
-import { useState } from "react";
+import { useState, memo, useEffect } from "react";
 import AddToCart from "./AddToCart";
 import { useNavigate } from "react-router-dom";
 
 import Ratings from "./Ratings";
 
-const MealCard = ({ purchased, meal, variant = "default" }) => {
+const MealCard = memo(({ purchased, meal, variant = "default" }) => {
   const navigate = useNavigate();
   const theme = useTheme();
   const [loaded, setLoaded] = useState(true);
+  useEffect(() => console.log("MealCard mounted"));
   return (
     <>
       {variant === "standalone" ? (
@@ -100,93 +101,95 @@ const MealCard = ({ purchased, meal, variant = "default" }) => {
           </Card>
         </Box>
       ) : (
-        <Card sx={{ maxWidth: "100%" }}>
-          <Stack
-            direction='row'
-            sx={{
-              zIndex: 2,
-              justifyContent: "space-between",
-              position: "absolute",
-              bottom: 50,
-              width: "100%",
-              backgroundImage:
-                "linear-gradient(to top, rgba(0,0,0,0.2), rgba(0,0,0,0.1))"
-            }}>
-            <Typography
+        <ImageListItem>
+          <Card sx={{ maxWidth: "100%" }}>
+            <Stack
+              direction='row'
               sx={{
-                color: "#fff",
-                fontWeight: "900"
-              }}
-              variant='h6'>
-              {meal.title}{" "}
-            </Typography>
-            <Ratings meal={meal} />
-          </Stack>
-          {loaded ? (
-            <CardMedia
-              onClick={() => navigate(`product/${meal.id}`)}
-              component='img'
-              onLoad={() => setLoaded(true)}
-              loading='lazy'
-              src={`http://localhost:8000/${meal.image}`}
-              alt='image of food'
-              height={410}
-              sx={{
-                maxWidth: "100%",
-                cursor: "pointer"
-              }}
-            />
-          ) : (
-            <Skeleton
-              sx={{ backgroundColor: "#ccc", maxWidth: "100%" }}
-              animation='wave'
-              variant='rectangular'
-              height={410}
-            />
-          )}
-
-          <CardActions
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              backgroundColor: theme.palette.secondary.main
-            }}>
-            {purchased ? (
-              <Box
+                zIndex: 2,
+                justifyContent: "space-between",
+                position: "absolute",
+                bottom: 50,
+                width: "100%",
+                backgroundImage:
+                  "linear-gradient(to top, rgba(0,0,0,0.2), rgba(0,0,0,0.1))"
+              }}>
+              <Typography
                 sx={{
-                  display: "flex",
-                  width: "30px",
-                  height: "30px",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  padding: 0,
-                  borderRadius: "25px",
-                  backgroundColor: theme.palette.primary.main
-                }}>
-                <Typography
+                  color: "#fff",
+                  fontWeight: "900"
+                }}
+                variant='h6'>
+                {meal.title}{" "}
+              </Typography>
+              <Ratings meal={meal} />
+            </Stack>
+            {loaded ? (
+              <CardMedia
+                onClick={() => navigate(`product/${meal.id}`)}
+                component='img'
+                onLoad={() => setLoaded(true)}
+                loading='lazy'
+                src={`http://localhost:8000/${meal.image}`}
+                alt='image of food'
+                height={410}
+                sx={{
+                  maxWidth: "100%",
+                  cursor: "pointer"
+                }}
+              />
+            ) : (
+              <Skeleton
+                sx={{ backgroundColor: "#ccc", maxWidth: "100%" }}
+                animation='wave'
+                variant='rectangular'
+                height={410}
+              />
+            )}
+
+            <CardActions
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                backgroundColor: theme.palette.secondary.main
+              }}>
+              {purchased ? (
+                <Box
                   sx={{
-                    color: "#fff",
-                    margin: 0,
-                    paddign: 0
-                  }}
-                  variant='h6'>
-                  {purchased}
+                    display: "flex",
+                    width: "30px",
+                    height: "30px",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    padding: 0,
+                    borderRadius: "25px",
+                    backgroundColor: theme.palette.primary.main
+                  }}>
+                  <Typography
+                    sx={{
+                      color: "#fff",
+                      margin: 0,
+                      paddign: 0
+                    }}
+                    variant='h6'>
+                    {purchased}
+                  </Typography>
+                </Box>
+              ) : (
+                <></>
+              )}
+              <Box>
+                <Typography sx={{ color: "#fff", fontWeight: 500 }}>
+                  TZS {meal.price}
                 </Typography>
               </Box>
-            ) : (
-              <></>
-            )}
-            <Box>
-              <Typography sx={{ color: "#fff", fontWeight: 500 }}>
-                TZS {meal.price}
-              </Typography>
-            </Box>
-            <AddToCart order={meal} />
-          </CardActions>
-        </Card>
+              <AddToCart order={meal} />
+            </CardActions>
+          </Card>
+        </ImageListItem>
       )}
     </>
   );
-};
+});
 
 export default MealCard;
