@@ -1,21 +1,33 @@
 import React, { useContext, useCallback, useMemo } from "react";
-import { Button, ButtonGroup, Tooltip, Stack, IconButton } from "@mui/material";
+import {
+  Button,
+  ButtonGroup,
+  Tooltip,
+  Stack,
+  IconButton,
+  useMediaQuery,
+  useTheme
+} from "@mui/material";
 import { UserContext } from "../context/UserContext";
 import { MenuContext } from "../context/MenuContext";
+
 import ArrowDropUpRounded from "@mui/icons-material/ArrowDropUpRounded";
 import ArrowDropDownRounded from "@mui/icons-material/ArrowDropDownRounded";
 
 const AddToCart = React.memo(({ order, arrowButtons = false }) => {
   const { userData, setUserData } = useContext(UserContext);
   const { menulist, setMenulist } = useContext(MenuContext);
+  const theme = useTheme();
+  const mobile = useMediaQuery(theme.breakpoints.up("xs"));
+  const tablet = useMediaQuery(theme.breakpoints.up("sm"));
+  const desktop = useMediaQuery(theme.breakpoints.up("md"));
 
-  /**
-   * Updates the inStock value for a specific item in the list.
-   *
-   * @param {Array} list - The array of menu items to update.
-   * @param {number} operation - The operation to perform (+1 for add, -1 for minus).
-   * @returns {Array} A new list with the updated inStock value for the matching item.
-   */
+  const sizes = () => {
+    if (desktop) return "medium";
+    if (tablet) return "small";
+    if (mobile) return "medium";
+  };
+
   const changeInStock = useCallback(
     (list, operation) => {
       return list.map((menu) =>
@@ -29,13 +41,6 @@ const AddToCart = React.memo(({ order, arrowButtons = false }) => {
     },
     [order.title]
   );
-
-  /**
-   * Updates the userData and menulist based on the operation (add or reduce).
-   *
-   * @param {number} operation - The change in the purchased count (1 for add, -1 for reduce).
-   * @param {number} inStockChange - The change in the inStock value (-1 for decrease, +1 for increase).
-   */
 
   const updateUserData = useCallback(
     (operation, inStockChange) => {
@@ -89,7 +94,7 @@ const AddToCart = React.memo(({ order, arrowButtons = false }) => {
       }
 
       // Update the inStock value in menulist
-      setMenulist(changeInStock(menulist, inStockChange));
+      setMenulist((previousList) => changeInStock(previousList, inStockChange));
       console.timeEnd("TheEntireUpdateFn");
     },
     [changeInStock, menulist, order, userData]
@@ -114,6 +119,7 @@ const AddToCart = React.memo(({ order, arrowButtons = false }) => {
 
   return (
     <Tooltip
+      placement='top'
       title={order.inStock ? `${order.inStock} in stock` : "stock is empty"}>
       {arrowButtons ? (
         <Stack
@@ -133,15 +139,21 @@ const AddToCart = React.memo(({ order, arrowButtons = false }) => {
           </IconButton>
         </Stack>
       ) : (
-        <ButtonGroup variant='contained'>
+        <ButtonGroup size={sizes()} variant='contained'>
           {orderInCart ? <Button onClick={reduceOrder}>-</Button> : null}
 
           <Button
+            sx={{
+              whiteSpace: "nowrap",
+              fontSize: {
+                sm: "0.7rem"
+              }
+            }}
             disabled={isDisabled}
             color={orderInCart ? "secondary" : "primary"}
             variant='contained'
             onClick={addOrder}>
-            Add To Cart
+            {orderInCart ? "Add To Cart" : "ADD TO CART"}
           </Button>
           {orderInCart ? (
             <Button disabled={isDisabled} onClick={addOrder}>

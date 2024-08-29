@@ -11,7 +11,7 @@ const MealsList = React.memo(({ list }) => {
   const mobile = useMediaQuery(theme.breakpoints.up("xs"));
   const tablet = useMediaQuery(theme.breakpoints.up("sm"));
   const desktop = useMediaQuery(theme.breakpoints.up("lg"));
-  useEffect(() => console.log("MealsList mounted"));
+  useEffect(() => console.log("MealsList mounted"), []);
   const cols = () => {
     if (desktop) return 3;
     if (tablet) return 2;

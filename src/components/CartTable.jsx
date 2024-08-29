@@ -8,7 +8,9 @@ import TableRow from "@mui/material/TableRow";
 import TableHead from "@mui/material/TableHead";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 import AddToCart from "./AddToCart";
+import { Link } from "react-router-dom";
 
 import { UserContext } from "../context/UserContext";
 
@@ -80,10 +82,15 @@ const CartTable = () => {
           </TableBody>
         </Table>
       ) : (
-        <Typography>
-          No item in cart yet. View some products and add them in cart to see
-          them here.
-        </Typography>
+        <Box sx={{ margin: 5 }}>
+          <Typography sx={{ marginTop: 10 }}>
+            No item in cart yet. View some products and add them in cart to see
+            them here.
+          </Typography>
+          <Link to='/'>
+            <Button>Home</Button>
+          </Link>
+        </Box>
       )}
     </TableContainer>
   );

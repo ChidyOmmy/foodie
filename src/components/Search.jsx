@@ -1,18 +1,20 @@
 import { styled } from "@mui/material/styles";
-import { Button, debounce, IconButton } from "@mui/material";
-import { useContext, useState } from "react";
+import { Button, IconButton } from "@mui/material";
+import { grey } from "@mui/material/colors";
+import { useContext, useState, useMemo } from "react";
 import { UserContext } from "../context/UserContext";
 import { MenuContext } from "../context/MenuContext";
-
 import Clear from "@mui/icons-material/Clear";
+import debounce from "@mui/material/utils/debounce";
+
 export const UserInput = styled("input")(({ theme }) => ({
   width: "35ch",
-  m: 0,
+  margin: 0,
   outline: "none",
   border: "none",
   textDecoration: "none !important",
   [theme.breakpoints.down("sm")]: {
-    width: "35ch"
+    width: "25ch"
   }
 }));
 
@@ -36,21 +38,32 @@ const Search = () => {
   const { userData, setUserData } = useContext(UserContext);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const debouncedFilterItems = debounce(() => {
-    const filteredItems = menulist.filter((item) =>
-      item.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setUserData({ ...userData, searchResults: filteredItems });
-  }, 600);
-
+  const debouncedFilterItems = useMemo(
+    () =>
+      debounce((term) => {
+        const filteredItems = menulist.filter((item) =>
+          item.title.toLowerCase().includes(term.toLowerCase())
+        );
+        setUserData((prevUserData) => ({
+          ...prevUserData,
+          searchResults: filteredItems
+        }));
+      }, 600),
+    [menulist, setUserData]
+  );
+  const clearSearch = () => {
+    setSearchTerm("");
+    debouncedFilterItems.clear(); // Cancel any pending debounce calls
+    setUserData((prevUserData) => ({ ...prevUserData, searchResults: [] }));
+  };
   const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-    if (searchTerm === "") {
-      setUserData({ ...userData, searchResults: [] });
+    const newSearchTerm = event.target.value;
+    setSearchTerm(newSearchTerm);
+    if (newSearchTerm === "") {
+      setUserData((prevUserData) => ({ ...prevUserData, searchResults: [] }));
       return;
     }
-    debouncedFilterItems();
-    console.log(userData.searchResults);
+    debouncedFilterItems(newSearchTerm);
   };
 
   return (
@@ -60,17 +73,13 @@ const Search = () => {
         type='search'
         value={searchTerm}
         onChange={handleSearchChange}
-        placeholder='search for offers, meals and recipes..'
+        placeholder='Search for offers, meals, and recipes..'
       />
-      <IconButton
-        onClick={() => {
-          setSearchTerm("");
-          setUserData({ ...userData, searchResults: [] });
-        }}>
-        <Clear />
+      <IconButton onClick={clearSearch}>
+        <Clear sx={{ color: grey[500] }} />
       </IconButton>
       <Button
-        onClick={debouncedFilterItems}
+        onClick={() => debouncedFilterItems(searchTerm)}
         variant='contained'
         sx={{ borderRadius: 15, margin: 0 }}>
         Search
@@ -78,4 +87,5 @@ const Search = () => {
     </SearchBox>
   );
 };
+
 export default Search;

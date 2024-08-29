@@ -1,5 +1,13 @@
-import { useContext, useState, useEffect } from "react";
-import { Box, Typography, Chip, Avatar, Stack, debounce } from "@mui/material";
+import {
+  useContext,
+  useState,
+  useEffect,
+  memo,
+  useMemo,
+  useCallback
+} from "react";
+import { Box, Typography, Chip, Avatar, Stack } from "@mui/material";
+import debounce from "lodash.debounce";
 import MealsList from "./MealsList";
 import { UserContext } from "../context/UserContext";
 import { MenuContext } from "../context/MenuContext";
@@ -15,52 +23,68 @@ import britishbreakfast from "../images/britishbreakfast.jpg";
 import chapatimaini from "../images/chapatimaini.jpg";
 import mixer from "../images/mixer.jpg";
 
-const categoriesList = [
-  { title: "meat", image: chickensticks },
-  { title: "protein", image: meal },
-  { title: "breakfast", image: tanzaniansnacks },
-  { title: "fast", image: shawarma },
-  { title: "lunch", image: pilau },
-  { title: "snacks", image: breakfast },
-  { title: "eggs", image: britishbreakfast },
-  { title: "desserts", image: desserts },
-  { title: "vegan", image: veganbreakfast },
-  { title: "wheat", image: chapatimaini }
-];
-const Meals = () => {
+const Meals = memo(() => {
+  const categoriesList = useMemo(
+    () => [
+      { title: "meat", image: chickensticks },
+      { title: "protein", image: meal },
+      { title: "breakfast", image: tanzaniansnacks },
+      { title: "fast", image: shawarma },
+      { title: "lunch", image: pilau },
+      { title: "snacks", image: breakfast },
+      { title: "eggs", image: britishbreakfast },
+      { title: "desserts", image: desserts },
+      { title: "vegan", image: veganbreakfast },
+      { title: "wheat", image: chapatimaini }
+    ],
+    []
+  );
+
   const { menulist } = useContext(MenuContext);
   const { userData, setUserData } = useContext(UserContext);
   const [categories] = useState(categoriesList);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const debouncedFilterItems = debounce((keyword) => {
-    const filteredItems = menulist.filter(
-      (item) =>
+  useEffect(() => {
+    console.log("Meals mounted");
+  }, []);
+
+  const debouncedFilterItems = useCallback(
+    debounce((keyword) => {
+      const filteredItems = menulist.filter((item) =>
         item.category
           .map((str) => str.toLowerCase())
-          .find((title) => title === keyword.toLowerCase()) !== undefined
-    );
-    setUserData({ ...userData, searchResults: filteredItems });
-  }, 300);
+          .includes(keyword.toLowerCase())
+      );
+      setUserData((prevUserData) => ({
+        ...prevUserData,
+        searchResults: filteredItems
+      }));
+    }, 300),
+    [menulist, setUserData]
+  );
 
-  const handleSearchChange = (keyword) => {
-    if (keyword === "" || keyword === "all") {
-      setUserData({ ...userData, searchResults: [] });
-    } else {
-      debouncedFilterItems(keyword);
-    }
-    setSearchTerm(keyword);
-  };
+  const handleSearchChange = useCallback(
+    (keyword) => {
+      if (!keyword || keyword === "all") {
+        setUserData((prevUserData) => ({ ...prevUserData, searchResults: [] }));
+      } else {
+        debouncedFilterItems(keyword);
+      }
+      setSearchTerm(keyword);
+    },
+    [debouncedFilterItems, setUserData]
+  );
 
   useEffect(() => {
     if (!userData.searchResults.length) {
       setSearchTerm("");
     }
-  }, [userData.searchResults]);
+  }, [userData.searchResults.length]);
 
   return (
     <Box sx={{ padding: 0, marginTop: 10 }}>
-      <Typography variant='h5'>Favorable,this time of the year</Typography>
+      <Typography variant='h5'>Favorable, this time of the year</Typography>
       <Stack
         direction='row'
         sx={{
@@ -69,34 +93,31 @@ const Meals = () => {
         }}>
         <Chip
           sx={{ marginTop: 1 }}
-          disabled={searchTerm === "" || searchTerm === "all" ? true : false}
-          onClick={() => {
-            handleSearchChange("all");
-          }}
+          disabled={!searchTerm || searchTerm === "all"}
+          onClick={() => handleSearchChange("all")}
           clickable
           label='All'
-          avatar={<Avatar src={mixer} alt='Vegan' />}
+          avatar={<Avatar src={mixer} alt='All' />}
         />
         {categories.map((category) => (
           <Chip
             sx={{ marginTop: 1 }}
-            disabled={searchTerm === category.title ? true : false}
-            onClick={() => {
-              handleSearchChange(category.title);
-            }}
+            disabled={searchTerm === category.title}
+            onClick={() => handleSearchChange(category.title)}
             clickable
             key={category.title}
             label={category.title}
-            avatar={<Avatar src={category.image} alt='Vegan' />}
+            avatar={<Avatar src={category.image} alt={category.title} />}
           />
         ))}
       </Stack>
-      {userData.searchResults.length > 0 ? (
-        <MealsList list={userData.searchResults} />
-      ) : (
-        <MealsList list={menulist} />
-      )}
+      <MealsList
+        list={
+          userData.searchResults.length > 0 ? userData.searchResults : menulist
+        }
+      />
     </Box>
   );
-};
+});
+
 export default Meals;

@@ -5,24 +5,34 @@ import {
   CardActions,
   Typography,
   Stack,
-  Box
+  Box,
+  useTheme
 } from "@mui/material";
 
-const VodacomPayCard = () => {
+const PayCard = ({ payNumber, color, title, name }) => {
   // Split the number into an array of digits
-  const digits = "555555".split("");
-
+  const digits = payNumber.split("");
+  const theme = useTheme();
   return (
     <Card
       sx={{
-        backgroundColor: "#ab2310",
-        width: "25%",
+        backgroundColor: color,
+        width: 250,
         margin: "0 auto",
-        padding: "20px"
+        padding: 5,
+        [theme.breakpoints.down("xs")]: {
+          width: "100%",
+          maxWidth: "100",
+          boxSizing: "border-box"
+        },
+        [theme.breakpoints.down("sm")]: {
+          width: "50%",
+          boxSizing: "border-box"
+        }
       }}>
       <CardContent>
         <Typography variant='h6' sx={{ color: "white" }}>
-          VODACOM PAY NUMBER
+          {title}
         </Typography>
 
         {/* Digit boxes */}
@@ -58,7 +68,7 @@ const VodacomPayCard = () => {
             NAME:
           </Typography>
           <Typography variant='h6' sx={{ color: "white" }}>
-            FOODIES POINT
+            {name}
           </Typography>
         </Stack>
       </CardActions>
@@ -66,4 +76,4 @@ const VodacomPayCard = () => {
   );
 };
 
-export default VodacomPayCard;
+export default PayCard;

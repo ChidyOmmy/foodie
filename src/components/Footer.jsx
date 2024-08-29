@@ -4,9 +4,7 @@ import React from "react";
 const Footer = () => {
   const theme = useTheme();
   return (
-    <Box
-      component='footer'
-      sx={{ position: "relative", bottom: 0, width: "100%" }}>
+    <Box component='footer' sx={{ marginTop: "auto", width: "100%" }}>
       <Divider />
       <Stack
         direction='row'

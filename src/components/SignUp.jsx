@@ -10,22 +10,20 @@ import {
   Typography,
   Button,
   CircularProgress,
-  Avatar,
-  useTheme
+  Avatar
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import PhoneInputWithCountryCode from "./PhoneInputWithCountryCode";
 import { UserContext } from "../context/UserContext";
 
-const LoginCard = () => {
+const SignUp = () => {
   const { userData, setUserData } = useContext(UserContext);
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [phoneValue, setPhoneValue] = useState("");
+  const [password, setPassword] = useState("juma");
+  const [showPassword, setShowPassword] = useState(true);
+  const [phoneValue, setPhoneValue] = useState("255711111112");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const theme = useTheme();
 
   const handleOnChangeProp = (value) => {
     setPhoneValue(value);
@@ -107,10 +105,9 @@ const LoginCard = () => {
       sx={{
         maxWidth: 500,
         margin: "auto",
-        paddin: "auto",
         mt: 5,
-        borderRadius: 3,
-        filter: theme.filter.dropShadow
+        boxShadow: 5,
+        borderRadius: 3
       }}>
       <CardContent>
         <Avatar
@@ -197,4 +194,4 @@ const LoginCard = () => {
   );
 };
 
-export default LoginCard;
+export default SignUp;

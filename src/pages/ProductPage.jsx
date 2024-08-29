@@ -5,19 +5,32 @@ import {
   Stack,
   Typography,
   TextField,
-  Avatar
+  Avatar,
+  useMediaQuery
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import { MenuContext } from "../context/MenuContext";
-
-import MealCard from "../components/MealCard";
+import { useTheme } from "@mui/material/styles";
+import MealCardLarge from "../components/MealCardLarge";
 import Ratings from "../components/Ratings";
+import { stringAvatar } from "./../components/StringAvatar";
 
 const ProductPage = () => {
   const { menulist } = useContext(MenuContext);
   const { userData } = useContext(UserContext);
   const params = useParams();
+  const theme = useTheme();
+
+  const mobile = useMediaQuery(theme.breakpoints.up("xs"));
+  const tablet = useMediaQuery(theme.breakpoints.up("sm"));
+  const desktop = useMediaQuery(theme.breakpoints.up("lg"));
+
+  const direction = () => {
+    if (desktop) return "row";
+    if (tablet) return "row";
+    if (mobile) return "column";
+  };
 
   const menu = menulist.find((object) => object.id === parseInt(params.id));
 
@@ -29,13 +42,17 @@ const ProductPage = () => {
         marginBottom: 5,
         display: "flex",
         flexDirection: "row",
-        width: "80%"
+        width: "80%",
+        [theme.breakpoints.down("sm")]: {
+          width: "100%",
+          maxWidth: "100%",
+          minWidth: "100%"
+        }
       }}>
       <Box>
         <Button onClick={() => navigate(-1)}> Go back</Button>
 
-        <MealCard
-          variant='standalone'
+        <MealCardLarge
           purchased={
             userData.cart.find((object) => object.id === menu.id)
               ? userData.cart.find((object) => object.id === menu.id).purchased
@@ -43,17 +60,25 @@ const ProductPage = () => {
           }
           meal={menu}
         />
-        <Ratings meal={menu} />
-        <Stack direction='row' justifyContent='space-between'>
-          <Typography> {menu.ratings} Stars </Typography>
+        <Stack mt={2} direction='row' justifyContent='space-between'>
+          <Stack direction='column'>
+            <Ratings meal={menu} />
+            <Typography> {menu.ratings} Stars </Typography>
+          </Stack>
           <Typography>340 Reviews </Typography>
         </Stack>
         <Stack mt={2} direction='column'>
-          <Stack direction='row' spacing={2} alignItemsItems='center' mb={2}>
-            <Avatar>M</Avatar>
-            <Typography>Guest(Anonymous)</Typography>
+          <Stack direction='row' spacing={2} alignItemsItems='flex-end' mb={2}>
+            <Avatar
+              {...stringAvatar(`${userData.first} ${userData.last}`, 45)}
+            />
+            <Typography>{`${userData.first} ${userData.last}`}</Typography>
           </Stack>
-          <TextField mt={2} placeholder='Leave a comment' />
+          <TextField
+            sx={{ maxWidth: "100%" }}
+            mt={2}
+            placeholder='Leave a comment'
+          />
           <Ratings meal={menu} />
           <Stack direction='column' mt={5}>
             <Stack direction='row' justifyContent='space-between'>
@@ -61,7 +86,7 @@ const ProductPage = () => {
                 <Avatar>K</Avatar>
                 <Typography>Average Meal Enjoyer</Typography>
               </Stack>
-              <Stack direction='row' alignItems='center'>
+              <Stack direction={direction()} alignItems='center'>
                 <Typography> {menu.ratings} Stars </Typography>
                 <Ratings meal={menu} />
               </Stack>

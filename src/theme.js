@@ -1,7 +1,6 @@
 import { createTheme } from "@mui/material/styles";
 
 const palette = {
-  mode: "dark",
   primary: {
     main: "#EC135F"
   },
@@ -9,9 +8,13 @@ const palette = {
     main: "#FFC100"
   }
 };
-export const theme = createTheme({
-  palette,
-  filter: {
-    dropShadow: `drop-shadow(-4px 15px 25px ${palette.primary.main})`
-  }
-});
+
+const getTheme = (mode) =>
+  createTheme({
+    palette: { mode, ...palette },
+    filter: {
+      dropShadow: `drop-shadow(-1px 5px 7px ${palette.primary.main})`
+    }
+  });
+
+export default getTheme;

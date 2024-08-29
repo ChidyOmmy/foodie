@@ -9,18 +9,21 @@ import {
 import { Container, Box, Skeleton, Stack } from "@mui/material";
 import Navbar from "./components/Navbar";
 import { ThemeProvider, Paper } from "@mui/material";
-import { theme } from "./theme";
 import { Routes, Route } from "react-router-dom";
 import { user } from "./Context";
 import Footer from "./components/Footer";
 import MenuContextProvider from "./context/MenuContext";
 import UserContextProvider from "./context/UserContext";
+import TokenProvider from "./context/TokenContext";
+import ScrollToTop from "./utils/ScrollToTop";
 
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const CheckOutPage = lazy(() => import("./pages/CheckOutPage"));
 const ProductPage = lazy(() => import("./pages/ProductPage"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
 const Error404 = lazy(() => import("./pages/Error404"));
+const ProfilePage = lazy(() => import("./pages/ProfilePage"));
+const SignInPage = lazy(() => import("./pages/SignInPage"));
 
 const LoadingSkeleton = () => {
   return (
@@ -45,51 +48,16 @@ const LoadingSkeleton = () => {
   );
 };
 
-const mytheme = theme;
 function App() {
-  const [userData, setUserData] = useState(user);
-
-  // // Effect hook to fetch data when the component mounts
-  // useEffect(() => {
-  //   // Function to fetch data from the API
-  //   const fetchData = async () => {
-  //     try {
-  //       // Make the fetch request
-  //       const response = await fetch("http://localhost:8000", {
-  //         method: "GET",
-  //         headers: {
-  //           "Content-Type": "application/json"
-  //         }
-  //       });
-
-  //       // Check if the response is successful
-  //       if (!response.ok) {
-  //         throw new Error("Network response was not ok");
-  //       }
-
-  //       // Parse the JSON data
-  //       const result = await response.json();
-
-  //       // Update the state with the fetched data
-  //       console.log(result);
-  //       setMenulist(result);
-  //     } catch (error) {
-  //       // Handle errors
-  //       console.error("There was a problem with the fetch operation:", error);
-  //     }
-  //   };
-
-  //   // Call the fetch function
-  //   fetchData();
-  // }, []); // Empty dependency array means this effect runs once after the initial render
-
+  useEffect(() => console.log("App mounted"), []);
   return (
-    <ThemeProvider theme={mytheme}>
-      <MenuContextProvider>
-        <UserContextProvider>
-          <Paper>
+    <MenuContextProvider>
+      <UserContextProvider>
+        <TokenProvider>
+          <Paper sx={{ margin: 0, padding: 0, minHeight: "100%" }}>
             <Navbar />
-            <Container>
+            <Container sx={{ minHeight: "100vh" }}>
+              <ScrollToTop />
               <Suspense fallback={<LoadingSkeleton />}>
                 <Routes>
                   <Route path='/' element={<LandingPage />} />
@@ -97,15 +65,17 @@ function App() {
                   <Route path='/product/:id' element={<ProductPage />} />
                   <Route path='/checkout' element={<CheckOutPage />} />
                   <Route path='/about' element={<AboutPage />} />
+                  <Route path='/profile' element={<ProfilePage />} />
+                  <Route path='/signin' element={<SignInPage />} />
                   <Route path='*' element={<Error404 />} />
                 </Routes>
               </Suspense>
             </Container>
             <Footer />
           </Paper>
-        </UserContextProvider>
-      </MenuContextProvider>
-    </ThemeProvider>
+        </TokenProvider>
+      </UserContextProvider>
+    </MenuContextProvider>
   );
 }
 
