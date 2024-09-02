@@ -9,7 +9,7 @@ import {
   Skeleton,
   ImageListItem
 } from "@mui/material";
-import { useState, memo, useEffect } from "react";
+import { useState, memo } from "react";
 import { Link } from "react-router-dom";
 import AddToCart from "./AddToCart";
 
@@ -19,7 +19,6 @@ import PurchasedBox from "./PurchasedBox";
 const MealCard = memo(({ purchased, meal }) => {
   const theme = useTheme();
   const [loaded, setLoaded] = useState(true);
-  useEffect(() => console.log("MealCard mounted", meal.id), [meal]);
 
   return (
     <ImageListItem>

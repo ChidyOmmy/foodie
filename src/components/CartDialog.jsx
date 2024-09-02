@@ -9,7 +9,7 @@ import IconButton from "@mui/material/IconButton";
 import ShoppingCart from "@mui/icons-material/ShoppingCart";
 import { useNavigate } from "react-router-dom";
 import CartTable from "./CartTable";
-import { UserContext } from "../context/UserContext";
+import { useStore } from "../store/productsStore";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='up' ref={ref} {...props} />;
@@ -17,7 +17,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const CartDialog = () => {
   const [open, setOpen] = React.useState(false);
-  const { userData } = React.useContext(UserContext);
+  const cart = useStore((state) => state.cart);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -46,7 +46,7 @@ const CartDialog = () => {
           <Button onClick={handleClose}>Close</Button>
           <Button
             variant='contained'
-            disabled={userData.cart.length === 0 ? true : false}
+            disabled={cart.length === 0 ? true : false}
             onClick={() => {
               handleClose();
               navigate("/checkout");

@@ -9,6 +9,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import MessageSnackbar from "./MessageSnackbar";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
+import { useStore } from "../store/productsStore";
 
 export default function CircularIntegration({ order }) {
   const [loading, setLoading] = React.useState(false);
@@ -18,6 +19,9 @@ export default function CircularIntegration({ order }) {
   const [message, setMessage] = React.useState("");
   const [error, setError] = React.useState("");
   const { userData, setUserData } = React.useContext(UserContext);
+  const cart = useStore((state) => state.cart);
+  const clearCart = useStore((state) => state.clearCart);
+
   const navigate = useNavigate();
 
   const buttonSx = {
@@ -97,12 +101,9 @@ export default function CircularIntegration({ order }) {
       }
 
       setTimeout(() => {
-        setUserData((prevUserData) => ({
-          ...prevUserData,
-          cart: []
-        }));
+        clearCart();
         navigate("/profile");
-      }, 4000);
+      }, 2000);
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
     }

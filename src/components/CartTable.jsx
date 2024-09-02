@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useCallback } from "react";
 import TableContainer from "@mui/material/TableContainer";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
@@ -11,18 +11,18 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import AddToCart from "./AddToCart";
 import { Link } from "react-router-dom";
-
-import { UserContext } from "../context/UserContext";
+import { useStore } from "../store/productsStore";
 
 const CartTable = () => {
-  const { userData, setUserData } = useContext(UserContext);
-  const totalprice = () => {
-    if (!Array.isArray(userData.cart)) {
+  const cart = useStore((state) => state.cart);
+
+  const totalprice = useCallback(() => {
+    if (!Array.isArray(cart)) {
       console.error("cart is not an array");
       return 0;
     }
 
-    return userData.cart.reduce((total, item) => {
+    return cart.reduce((total, item) => {
       if (typeof item.total === "function") {
         return total + item.total();
       } else {
@@ -30,7 +30,7 @@ const CartTable = () => {
         return total;
       }
     }, 0);
-  };
+  });
   return (
     <TableContainer sx={{ width: 540, maxWidth: "100%" }} component={Paper}>
       {totalprice() !== 0 ? (
@@ -46,7 +46,7 @@ const CartTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {userData.cart.map((order) => (
+            {cart.map((order) => (
               <TableRow key={order.id}>
                 <TableCell>
                   <Box
@@ -58,7 +58,7 @@ const CartTable = () => {
                 </TableCell>
                 <TableCell>{order.title}</TableCell>
                 <TableCell sx={{ textAlign: "right" }}>
-                  {order.purchased}
+                  {order.quantity}
                 </TableCell>
                 <TableCell>
                   <AddToCart order={order} arrowButtons={true} />

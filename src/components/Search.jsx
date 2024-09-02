@@ -1,11 +1,8 @@
 import { styled } from "@mui/material/styles";
 import { Button, IconButton } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import { useContext, useState, useMemo } from "react";
-import { UserContext } from "../context/UserContext";
-import { MenuContext } from "../context/MenuContext";
 import Clear from "@mui/icons-material/Clear";
-import debounce from "@mui/material/utils/debounce";
+import { useStore } from "../store/productsStore";
 
 export const UserInput = styled("input")(({ theme }) => ({
   width: "35ch",
@@ -34,36 +31,21 @@ export const SearchBox = styled("span")(({ theme }) => ({
 }));
 
 const Search = () => {
-  const { menulist } = useContext(MenuContext);
-  const { userData, setUserData } = useContext(UserContext);
-  const [searchTerm, setSearchTerm] = useState("");
+  const searchTerm = useStore((state) => state.searchTerm);
+  const searchType = useStore((state) => state.searchType);
+  const setSearchTerm = useStore((state) => state.setSearchTerm);
+  const setSearchType = useStore((state) => state.setSearchType);
 
-  const debouncedFilterItems = useMemo(
-    () =>
-      debounce((term) => {
-        const filteredItems = menulist.filter((item) =>
-          item.title.toLowerCase().includes(term.toLowerCase())
-        );
-        setUserData((prevUserData) => ({
-          ...prevUserData,
-          searchResults: filteredItems
-        }));
-      }, 600),
-    [menulist, setUserData]
-  );
   const clearSearch = () => {
     setSearchTerm("");
-    debouncedFilterItems.clear(); // Cancel any pending debounce calls
-    setUserData((prevUserData) => ({ ...prevUserData, searchResults: [] }));
   };
+
   const handleSearchChange = (event) => {
     const newSearchTerm = event.target.value;
-    setSearchTerm(newSearchTerm);
-    if (newSearchTerm === "") {
-      setUserData((prevUserData) => ({ ...prevUserData, searchResults: [] }));
-      return;
+    if (searchType !== "title") {
+      setSearchType("title");
     }
-    debouncedFilterItems(newSearchTerm);
+    setSearchTerm(newSearchTerm);
   };
 
   return (
@@ -79,7 +61,8 @@ const Search = () => {
         <Clear sx={{ color: grey[500] }} />
       </IconButton>
       <Button
-        onClick={() => debouncedFilterItems(searchTerm)}
+        value={searchTerm}
+        onClick={() => console.log("searching...")}
         variant='contained'
         sx={{ borderRadius: 15, margin: 0 }}>
         Search

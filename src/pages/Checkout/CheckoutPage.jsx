@@ -3,6 +3,7 @@ import { Box, Stack, useTheme, Typography, useMediaQuery } from "@mui/material";
 import CartTable from "../../components/CartTable";
 import { UserContext } from "../../context/UserContext";
 import delivery from "../../images/delivery.png";
+import { useStore } from "../store/productsStore";
 
 const CheckoutPage = () => {
   const theme = useTheme();
@@ -16,9 +17,11 @@ const CheckoutPage = () => {
     if (mobile) return "column";
   };
   const { userData } = useContext(UserContext);
+  const cart = useStore((state) => state.cart);
+
   return (
     <Box mt={5} mb={5} sx={{ maxWidth: "100%" }}>
-      {userData.cart.length > 1 && (
+      {cart.length > 1 && (
         <Typography>
           Checkout your order now and get it delivered to you as fast as it can
           get

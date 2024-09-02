@@ -10,14 +10,17 @@ import {
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
-import { MenuContext } from "../context/MenuContext";
+import { useStore } from "../store/productsStore";
+
 import { useTheme } from "@mui/material/styles";
 import MealCardLarge from "../components/MealCardLarge";
 import Ratings from "../components/Ratings";
 import { stringAvatar } from "./../components/StringAvatar";
 
 const ProductPage = () => {
-  const { menulist } = useContext(MenuContext);
+  const products = useStore((state) => state.products);
+  const cart = useStore((state) => state.cart);
+
   const { userData } = useContext(UserContext);
   const params = useParams();
   const theme = useTheme();
@@ -32,7 +35,7 @@ const ProductPage = () => {
     if (mobile) return "column";
   };
 
-  const menu = menulist.find((object) => object.id === parseInt(params.id));
+  const menu = products.find((object) => object.id === parseInt(params.id));
 
   const navigate = useNavigate(-1);
   return (
@@ -54,8 +57,8 @@ const ProductPage = () => {
 
         <MealCardLarge
           purchased={
-            userData.cart.find((object) => object.id === menu.id)
-              ? userData.cart.find((object) => object.id === menu.id).purchased
+            cart.find((object) => object.id === menu.id)
+              ? cart.find((object) => object.id === menu.id).purchased
               : 0
           }
           meal={menu}

@@ -1,21 +1,14 @@
-import {
-  useState,
-  createContext,
-  useContext,
-  lazy,
-  Suspense,
-  useEffect
-} from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Container, Box, Skeleton, Stack } from "@mui/material";
-import Navbar from "./components/Navbar";
-import { ThemeProvider, Paper } from "@mui/material";
+import Navbar from "./components/Navbar/Navbar";
+import { Paper } from "@mui/material";
 import { Routes, Route } from "react-router-dom";
-import { user } from "./Context";
 import Footer from "./components/Footer";
 import MenuContextProvider from "./context/MenuContext";
 import UserContextProvider from "./context/UserContext";
 import TokenProvider from "./context/TokenContext";
 import ScrollToTop from "./utils/ScrollToTop";
+import { useStore } from "./store/productsStore";
 
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const CheckOutPage = lazy(() => import("./pages/CheckOutPage"));
@@ -49,15 +42,49 @@ const LoadingSkeleton = () => {
 };
 
 function App() {
-  useEffect(() => console.log("App mounted"), []);
+  const initializeProducts = useStore((state) => state.initializeProducts);
+  // Effect hook to fetch data when the component mounts
+  useEffect(() => {
+    // Function to fetch data from the API
+    const fetchData = async () => {
+      try {
+        // Make the fetch request
+        const response = await fetch("http://localhost:8000", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+
+        // Check if the response is successful
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        // Parse the JSON data
+        const result = await response.json();
+
+        // Update the state with the fetched data
+        console.log(result);
+        initializeProducts(result);
+      } catch (error) {
+        // Handle errors
+        console.error("There was a problem with the fetch operation:", error);
+      }
+    };
+
+    // Call the fetch function
+    fetchData();
+  }, []); // Empty dependency array means this effect runs once after the initial render
+  console.log("App mounted");
   return (
     <MenuContextProvider>
       <UserContextProvider>
         <TokenProvider>
           <Paper sx={{ margin: 0, padding: 0, minHeight: "100%" }}>
+            <ScrollToTop />
             <Navbar />
             <Container sx={{ minHeight: "100vh" }}>
-              <ScrollToTop />
               <Suspense fallback={<LoadingSkeleton />}>
                 <Routes>
                   <Route path='/' element={<LandingPage />} />
