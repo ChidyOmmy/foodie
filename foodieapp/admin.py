@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Meal, Order, OrderItem
+from .models import Meal, Order, OrderItem,Profile
+
+admin.site.register(Profile)
 
 @admin.register(Meal)
 class MealAdmin(admin.ModelAdmin):

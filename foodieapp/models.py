@@ -2,7 +2,12 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 
-# Create your views here.
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile',null=True,blank=True)
+    address = models.CharField(max_length=255, blank=True, null=True)
+    phone = models.CharField(max_length=15)
+    def __str__(self):
+        return self.user.username
 
 class Meal(models.Model):
     title = models.CharField(max_length=255)
@@ -18,7 +23,7 @@ class Meal(models.Model):
         return self.title
 
 class Order(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True,related_name='orders')
     customer_name = models.CharField(max_length=255)  # Customer's name
     customer_mobile = models.CharField(max_length=15)  # Mobile number of the customer
     delivery_address = models.TextField()  # Delivery address for the order
@@ -42,9 +47,11 @@ class OrderItem(models.Model):
     total_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, editable=False)
 
     def clean(self):
-        # Check if quantity exceeds inStock
-        if self.quantity > self.meal.inStock:
-            raise ValidationError(f"Quantity cannot exceed available stock ({self.meal.inStock})")
+        #if item is being created not updated (makes it easier for admin to update order status especially completed without errors)
+        if not self.id:
+             # Check if quantity exceeds inStock
+            if self.quantity > self.meal.inStock:
+                raise ValidationError(f"Quantity cannot exceed available stock ({self.meal.inStock})")
         
     def save(self, *args, **kwargs):
         # Call clean method to validate quantity
