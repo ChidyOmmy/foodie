@@ -34,7 +34,7 @@ const ProfilePage = () => {
   const [fullName, setFullName] = useState(
     `${userData.first} ${userData.last}`
   );
-  const [phoneNumber, setPhoneNumber] = useState(userData.profile.phone);
+  const [phone, setPhone] = useState(userData.profile.phone);
   const [address, setAddress] = useState(userData.profile.location);
   const logout = () => {
     setUserData(() => emptyUser);
@@ -54,9 +54,8 @@ const ProfilePage = () => {
         },
         body: JSON.stringify({
           full_name: fullName,
-          phone_number: phoneNumber,
           address: address,
-          phone: phoneNumber
+          phone
         })
       });
 
@@ -70,14 +69,27 @@ const ProfilePage = () => {
         setEditMode(false);
         setUserData((prevData) => ({
           ...prevData,
-          first: fullName.split(" ")[0],
-          last: fullName.split(" ")[1],
+          first: data.user.first_name,
+          last: data.user.last_name,
           profile: {
-            ...prevData.profile,
-            phone: phoneNumber,
-            location: address
+            phone: data.user.phone,
+            location: data.user.address
           }
         }));
+        const localUserData = JSON.parse(localStorage.getItem("userData"))
+         localStorage.setItem(
+          "userData",
+          JSON.stringify({
+            ...localUserData,
+            first: data.user.first_name,
+            last: data.user.last_name,
+            profile:{
+              ...localUserData.profile,
+              phone: data.user.phone,
+              location: data.user.address
+            }
+          })
+        );
       }
     } catch (error) {
       console.error("Error:", error);
@@ -124,8 +136,10 @@ const ProfilePage = () => {
                 fullWidth
               />
               <PhoneInputWithCountryCode
-                value={phoneNumber}
-                onChange={(value) => setPhoneNumber(() => value)}
+                value={phone}
+                onChangeProp={(value) =>{ 
+                  setPhone(value)
+                }}
               />
               <TextField
                 label='Address'

@@ -69,7 +69,6 @@ const LoginCard = () => {
         // Handle successful login, such as saving tokens and user data
         localStorage.setItem("access", access);
         localStorage.setItem("refresh", refresh);
-        localStorage.setItem("userData", JSON.stringify(user));
         localStorage.setItem(
           "userData",
           JSON.stringify({

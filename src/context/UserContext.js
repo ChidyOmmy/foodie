@@ -27,7 +27,7 @@ const UserContextProvider = ({ children }) => {
 
   useEffect(() => {
     const localUserData = JSON.parse(localStorage.getItem("userData"));
-    const localProfile = JSON.parse(localStorage.getItem("userProfile"));
+    const localProfile = localUserData.profile;
     const accessToken = localStorage.getItem("access");
     const refreshToken = localStorage.getItem("refresh");
 
@@ -46,7 +46,6 @@ const UserContextProvider = ({ children }) => {
       }));
     } else {
       localStorage.removeItem("userData");
-      localStorage.removeItem("userProfile");
       localStorage.removeItem("access");
       localStorage.removeItem("refresh");
     }
