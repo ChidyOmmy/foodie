@@ -27,7 +27,7 @@ const UserContextProvider = ({ children }) => {
 
   useEffect(() => {
     const localUserData = JSON.parse(localStorage.getItem("userData"));
-    const localProfile = localUserData.profile;
+    const localProfile = localUserData?.profile ? localUserData.profile : {};
     const accessToken = localStorage.getItem("access");
     const refreshToken = localStorage.getItem("refresh");
 

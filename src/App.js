@@ -9,6 +9,7 @@ import UserContextProvider from "./context/UserContext";
 import TokenProvider from "./context/TokenContext";
 import ScrollToTop from "./utils/ScrollToTop";
 import { useStore } from "./store/productsStore";
+import SkeletonPage from './pages/SkeletonPage'
 
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const CheckOutPage = lazy(() => import("./pages/CheckOutPage"));
@@ -17,29 +18,6 @@ const AboutPage = lazy(() => import("./pages/AboutPage"));
 const Error404 = lazy(() => import("./pages/Error404"));
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 const SignInPage = lazy(() => import("./pages/SignInPage"));
-
-const LoadingSkeleton = () => {
-  return (
-    <Box>
-      <Stack direction='row' spacing={2}>
-        <Skeleton
-          sx={{ backgroundColor: "#ccc", maxWidth: "100%" }}
-          animation='wave'
-          variant='rectangular'
-          height={410}
-          width='50%'
-        />
-        <Skeleton
-          sx={{ backgroundColor: "#ccc", maxWidth: "100%" }}
-          animation='wave'
-          variant='rectangular'
-          height={410}
-          width='50%'
-        />
-      </Stack>
-    </Box>
-  );
-};
 
 function App() {
   const initializeProducts = useStore((state) => state.initializeProducts);
@@ -85,9 +63,9 @@ function App() {
             <ScrollToTop />
             <Navbar />
             <Container sx={{ minHeight: "100vh" }}>
-              <Suspense fallback={<LoadingSkeleton />}>
+              <Suspense fallback={<SkeletonPage />}>
                 <Routes>
-                  <Route path='/' element={<LandingPage />} />
+                  <Route path='/' exact element={<LandingPage />} />
                   <Route path='/product' element={<ProductPage />} />
                   <Route path='/product/:id' element={<ProductPage />} />
                   <Route path='/checkout' element={<CheckOutPage />} />
