@@ -16,7 +16,6 @@ class OrderItemSerializer(serializers.ModelSerializer):
         model = OrderItem
         fields = ['meal', 'quantity', 'total_price']
 class OrderSerializer(serializers.ModelSerializer):
-    #ChatGPT how can I access orderItems whose order == the order being serialized
     order_items = OrderItemSerializer(many=True, read_only=True, source='items')
 
     class Meta:
